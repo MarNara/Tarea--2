@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+//odio github
+
 typedef struct {
   char id[100];
   char title[100];
