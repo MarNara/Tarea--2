@@ -132,12 +132,12 @@ void cargar_canciones(Map *cancions_byid, Map *cancions_bygeneros) {
   // Itera sobre el mapa para mostrar las películas cargadas
   MapPair *pair = map_first(cancions_byid);
   while (pair != NULL) {
-    Film *cancion = pair->value;
-    printf("ID: %s, Título: %s, artists: %s, Año: %d\n", cancion->id, cancion->title,
+    Song *cancion = pair->value;
+    printf("ID: %s, Canción: %s, Artista: %s, Año: %d\n", cancion->id, cancion->track_name,
            cancion->artists, cancion->tempo);
 
     printf("Géneros: ");
-    for(char *genero = list_first(cancion->generos); genero != NULL; genero = list_next(cancion->generos))
+    for(char *genero = list_first(cancion->track_genero); genero != NULL; genero = list_next(cancion->track_genero))
       printf("%s, ", genero);
     printf("\n");
     
