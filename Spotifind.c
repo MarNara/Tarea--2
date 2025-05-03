@@ -17,6 +17,15 @@ typedef struct {
   int tempo;
 } Song;
 
+/*typedef struct {
+  char id[100];
+  char title[100];
+  List *generos;
+  char artists[300];
+  float rating;
+  int tempo;
+} Film;
+*/
 
 // Menú principal
 void mostrarMenuPrincipal() {
@@ -62,9 +71,9 @@ int is_equal_int(void *key1, void *key2) {
 /**
  * Carga películas desde un archivo CSV y las almacena en un mapa por ID.
  */
-void cargar_canciones(const char * ruta_archivo) {
+void cargar_canciones(Map *cancions_byid, Map *cancions_bygeneros) {
   // Intenta abrir el archivo CSV que contiene datos de películas
-  FILE *archivo = fopen(ruta_archivo, "r");
+  FILE *archivo = fopen("data/Top1500.csv", "r");
   if (archivo == NULL) {
     perror(
         "Error al abrir el archivo"); // Informa si el archivo no puede abrirse
@@ -81,13 +90,14 @@ void cargar_canciones(const char * ruta_archivo) {
     // Crea una nueva estructura Film y almacena los datos de cada película
     Song *cancion = (Song *)malloc(sizeof(Song));
     strcpy(cancion->id, campos[1]);        // Asigna ID
-    strcpy(cancion->track_name, campos[4]);     // Asigna título
-    strcpy(cancion->artists, campos[2]); // Asigna artists
-    cancion->track_genero = split_string(campos[20], ",");       // Inicializa la lista de géneros
-    cancion->tempo = atoi(campos[18]); // Asigna año, convirtiendo de cadena a entero
+    strcpy(cancion->track_name, campos[14]);     // Asigna título
+    strcpy(cancion->artists, campos[14]); // Asigna artists
+    cancion->track_genero = split_string(campos[11], ",");       // Inicializa la lista de géneros
+    cancion->tempo =
+        atoi(campos[10]); // Asigna año, convirtiendo de cadena a entero
 
     
-    // Inserta la canción en el mapa usando el ID como clave
+    // Inserta la película en el mapa usando el ID como clave
     map_insert(cancions_byid, cancion->id, cancion);
 
     // Código generado con ayuda de chatgpt3.5
@@ -138,14 +148,36 @@ void cargar_canciones(const char * ruta_archivo) {
 /**
  * Busca y muestra la información de una película por su ID en un mapa.
  */
+//CAMBIE POR BUSCAR POR GENERO
+void buscar_por_id(Map *cancions_byid) {
+  char id[10]; // Buffer para almacenar el ID de la película
 
+  // Solicita al usuario el ID de la película
+  printf("Ingrese el id de la canción: ");
+  scanf("%s", id); // Lee el ID del teclado
+
+  // Busca el par clave-valor en el mapa usando el ID proporcionado
+  MapPair *pair = map_search(cancions_byid, id);
+
+  // Si se encontró el par clave-valor, se extrae y muestra la información de la
+  // película
+  if (pair != NULL) {
+    Song *cancion =
+        pair->value; // Obtiene el puntero a la estructura de la película
+    // Muestra el título y el año de la película
+    printf("Cancion: %s, tempo: %d\n", cancion->track_name, cancion->tempo);
+  } else {
+    // Si no se encuentra la película, informa al usuario
+    printf("La canción con id %s no existe\n", id);
+  }
+}
 
 void buscar_por_genero(Map *cancions_bygeneros) {
   char genero[100];
 
-  // Solicita al usuario el ID de la canción
+  // Solicita al usuario el ID de la película
   printf("Ingrese el género de la película: ");
-  scanf("%99s", genero); // Lee el ID del teclado
+  scanf("%s", genero); // Lee el ID del teclado
 
   MapPair *pair = map_search(cancions_bygeneros, genero);
   
@@ -165,13 +197,11 @@ int main() {
   char opcion; // Variable para almacenar una opción ingresada por el usuario
                // (sin uso en este fragmento)
 
-  char ruta[1000];
-  scanf("%s",ruta);
-
   // Crea un mapa para almacenar películas, utilizando una función de
   // comparación que trabaja con claves de tipo string.
   Map *cancions_byid = map_create(is_equal_str);
   Map *cancions_bygeneros = map_create(is_equal_str);
+
   // Recuerda usar un mapa por criterio de búsqueda
 
   do {
@@ -181,10 +211,11 @@ int main() {
 
     switch (opcion) {
     case '1':
-      cargar_canciones(ruta);
+      cargar_canciones(cancions_byid, cancions_bygeneros);
       break;
     case '2':
-      buscar_por_genero(cancions_bygeneros);
+      buscar_por_id(cancions_byid);//para seguir mirando la funcion.
+      buscar_por_genero(cancions_byid);
       break;
     case '3':
       buscar_por_artista(cancions_bygeneros);
