@@ -1,10 +1,22 @@
 #include "tdas/extra.h"
 #include "tdas/list.h"
+#include "tdas/treemap.h"
 #include "tdas/map.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-//odio github
+
+int lower_than_int(void* a, void* b) {
+  return (*(int*)a < *(int*)b);
+}
+
+int lower_than_str(void* a, void* b) {
+  return strcmp((char*)a, (char*)b) < 0;
+}
+
+int lower_than_float(void* a, void* b) {
+   return (*(float*)a < *(float*)b);
+}
 
 //estructura de las canciones
 // id, artists, album_name, track_name, tempo y track_genero
@@ -62,7 +74,7 @@ int is_equal_int(void *key1, void *key2) {
 /**
  * Carga películas desde un archivo CSV y las almacena en un mapa por ID.
  */
-void cargar_canciones(const char * ruta_archivo) {
+void cargar_canciones(const char * ruta_archivo, TreeMap *canciones, TreeMap *por_genero, TreeMap *por_artista, TreeMap *por_tempo) {
   // Intenta abrir el archivo CSV que contiene datos de películas
   FILE *archivo = fopen(ruta_archivo, "r");
   if (archivo == NULL) {
@@ -77,62 +89,48 @@ void cargar_canciones(const char * ruta_archivo) {
   campos = leer_linea_csv(archivo, ','); // Lee los encabezados del CSV
 
   // Lee cada línea del archivo CSV hasta el final
-  while ((campos = leer_linea_csv(archivo, ',')) != NULL) {
+  while ((campos = leer_linea_csv(archivo, ',')) != NULL) 
+  {
     // Crea una nueva estructura Film y almacena los datos de cada película
     Song *cancion = (Song *)malloc(sizeof(Song));
-    strcpy(cancion->id, campos[1]);        // Asigna ID
-    strcpy(cancion->track_name, campos[4]);     // Asigna título
-    strcpy(cancion->artists, campos[2]); // Asigna artists
+    strcpy(cancion->id, campos[0]);        // Asigna ID
+    strcpy(cancion->track_name, campos[5]);     // Asigna título
+    strcpy(cancion->artists, campos[3]); // Asigna artists
     cancion->track_genero = split_string(campos[20], ",");       // Inicializa la lista de géneros
     cancion->tempo = atoi(campos[18]); // Asigna año, convirtiendo de cadena a entero
+    strcpy(cancion->album_name, campos[2]);
 
+    insertTreeMap(canciones,&cancion->id,cancion);
     
-    // Inserta la canción en el mapa usando el ID como clave
-    map_insert(cancions_byid, cancion->id, cancion);
-
-    // Código generado con ayuda de chatgpt3.5
-    // conversación: https://chat.openai.com/share/5f0643ad-e8f5-4fb7-a0fa-2d2f92408429
-    
-    // Obtiene el primer género de la lista de géneros de la película
-    char *genero = list_first(cancion->track_genero);
-    // Itera sobre cada género de la película
-    while (genero != NULL) {
-        // Busca el género en el mapa cancions_bygeneros
-        MapPair *genero_pair = map_search(cancions_bygeneros, genero);
-
-        // Si el género no existe en el mapa, crea una nueva lista y agrégala al mapa
-        if (genero_pair == NULL) {
-            List *new_list = list_create();
-            list_pushBack(new_list, cancion);
-            map_insert(cancions_bygeneros, genero, new_list);
-        } else {
-            // Si el género ya existe en el mapa, obtén la lista y agrega la película
-            List *genero_list = (List *)genero_pair->value;
-            list_pushBack(genero_list, cancion);
-        }
-
-        // Avanza al siguiente género en la lista
-        genero = list_next(cancion->track_genero);
+    List *generos = cancion->track_genero;
+    Song *cancion_genero = cancion;
+    List *genero_iter = list_first(generos);
+    while (genero_iter != NULL)
+    {
+      insertTreeMap(por_genero, genero_iter->value, cancion_genero);
+      genero_iter = list_next(genero_iter);
     }
     
+    insertTreeMap(por_artista, &cancion->artists,cancion);
+
+    if (cancion->tempo < 80)
+    {
+      insertTreeMap(por_tempo, "Lentas", cancion);
+    }
+    else if (cancion->tempo >= 80 && cancion->tempo <= 120)
+    {
+      insertTreeMap(por_tempo, "Modetadas",cancion);
+    }
+    else
+    {
+      insertTreeMap(por_tempo, "Rapidas", can);
+;
+    }
+    
+
   }
   fclose(archivo); // Cierra el archivo después de leer todas las líneas
 
-
-  // Itera sobre el mapa para mostrar las películas cargadas
-  MapPair *pair = map_first(cancions_byid);
-  while (pair != NULL) {
-    Song *cancion = pair->value;
-    printf("ID: %s, Canción: %s, Artista: %s, Tempo: %d\n", cancion->id, cancion->track_name,
-           cancion->artists, cancion->tempo);
-
-    printf("Géneros: ");
-    for(char *genero = list_first(cancion->track_genero); genero != NULL; genero = list_next(cancion->track_genero))
-      printf("%s, ", genero);
-    printf("\n");
-    
-    pair = map_next(cancions_byid); // Avanza al siguiente par en el mapa
-  }
 }
 
 /**
@@ -140,14 +138,15 @@ void cargar_canciones(const char * ruta_archivo) {
  */
 
 
-void buscar_por_genero(Map *cancions_bygeneros) {
+ //en esta función 
+void buscar_por_genero(TreeMap* cancions_bygeneros) {
   char genero[100];
 
   // Solicita al usuario el ID de la canción
-  printf("Ingrese el género de la película: ");
+  printf("Ingrese el género de la canción: ");
   scanf("%99s", genero); // Lee el ID del teclado
 
-  MapPair *pair = map_search(cancions_bygeneros, genero);
+  Pair *pair = searchTreeMap(cancions_bygeneros, genero);
   
   if (pair != NULL) {
       List* cancions = pair->value;
@@ -161,18 +160,61 @@ void buscar_por_genero(Map *cancions_bygeneros) {
   }
 }
 
+
+//buscar tempo, necesito un switch
+void buscar_por_tempo(TreeMap* canciones_tempo){
+  int opcion;
+  //pedir al usuario que ingrese un tempo
+  printf("Ingrese la “velocidad” deseada de las canciones: \n ");
+  printf("Lentas: menor 80 BPM \n");
+  printf("Moderadas: mayor o igual a 80, menor o igual a 120 \n");
+  printf("Rapidas: mayor a 120\n");
+  //VEERIFICAR EL SACNF Y EL TIPO DE DATO
+  scanf("%s", &opcion); // Lee el ID del teclado
+
+  Pair *pair = firstTreeMap(canciones_tempo);
+  //Song *cancion = (Song *)malloc(sizeof(Song));
+  if (pair != NULL) {
+      Song *cancion = pair->value;
+      while (pair != NULL)
+      {
+        switch (cancion->tempo) {
+          case 'Lentas':
+          //aplicar la logica para mostrar solo las canciones con tempos lentos (menor a 80) 
+            if(cancion->tempo < 80){
+              printf("Canciones con tempo lento: %d \n", cancion->tempo);
+            }
+            break;
+          case 'Moderadas':
+          //aplicar la logica para mostrar solo las canciones con tempos Moderados (mayor o igual a 80, menor o igual a 120)
+            if(cancion->tempo >= 80 && cancion->tempo <= 120){
+              printf("Canciones con tempo Moderadas %d \n", cancion->tempo);
+            }
+            break;
+          case 'Rapidas':
+          //aplicar la logica para mostrar solo las canciones con tempos rapidas (mayor a 120)
+            if(cancion->tempo > 120){
+              printf("Canciones con tempo Rapidas %d \n", cancion->tempo);
+            }
+            break;
+        }
+      }
+  }
+}
+
 int main() {
   char opcion; // Variable para almacenar una opción ingresada por el usuario
                // (sin uso en este fragmento)
 
   char ruta[1000];
   scanf("%s",ruta);
+  //crear mapa de canciones
+  //falta implementar treeMap
 
-  // Crea un mapa para almacenar películas, utilizando una función de
-  // comparación que trabaja con claves de tipo string.
-  Map *cancions_byid = map_create(is_equal_str);
-  Map *cancions_bygeneros = map_create(is_equal_str);
-  // Recuerda usar un mapa por criterio de búsqueda
+  TreeMap *canciones_id = createTreeMap(lower_than_int);
+  TreeMap *canciones_byGenero = createTreeMap(lower_than_str);
+  TreeMap *canciones_byTempo = createTreeMap(lower_than_int);
+  TreeMap *canciones_byArtista = createTreeMap(lower_than_str);
 
   do {
     mostrarMenuPrincipal();
@@ -181,25 +223,25 @@ int main() {
 
     switch (opcion) {
     case '1':
-      cargar_canciones(ruta);
+      cargar_canciones(ruta,canciones_id,canciones_byGenero,canciones_byTempo,canciones_byArtista);
       break;
     case '2':
-      buscar_por_genero(cancions_bygeneros);
+      buscar_por_genero(canciones);
       break;
     case '3':
-      buscar_por_artista(cancions_bygeneros);
+      buscar_por_artista(canciones);
       break;
     case '4':
-      buscar_por_tempo(cancions_byid);
+      buscar_por_tempo(canciones);
       break;
     case '5':
-      crear_list_reproduccion(cancions_byid, cancions_bygeneros);
+      crear_list_reproduccion(canciones);
       break;
     case '6':
-      agregar_cancion_aLista(cancions_byid);
+      agregar_cancion_aLista(canciones);
       break;
     case '7':
-      mostrar_list_canciones(cancions_byid);
+      mostrar_list_canciones(canciones);
       break;
     }
     presioneTeclaParaContinuar();
