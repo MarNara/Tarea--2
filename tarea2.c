@@ -23,7 +23,7 @@ int lower_than_float(void* a, void* b) {
 typedef struct {
   char id[100];
   char artists[100];
-  char track_name;
+  char track_name[100];
   List *track_genero;
   char album_name[300];
   int tempo;
@@ -107,7 +107,7 @@ void cargar_canciones(const char * ruta_archivo, TreeMap *canciones, TreeMap *po
     List *genero_iter = list_first(generos);
     while (genero_iter != NULL)
     {
-      insertTreeMap(por_genero, genero_iter->value, cancion_genero);
+      insertTreeMap(por_genero, genero_iter->current->data, cancion_genero);
       genero_iter = list_next(genero_iter);
     }
     
@@ -123,7 +123,7 @@ void cargar_canciones(const char * ruta_archivo, TreeMap *canciones, TreeMap *po
     }
     else
     {
-      insertTreeMap(por_tempo, "Rapidas", can);
+      insertTreeMap(por_tempo, "Rapidas", cancion);
 ;
     }
     
@@ -166,11 +166,11 @@ void buscar_por_tempo(TreeMap* canciones_tempo){
   int opcion;
   //pedir al usuario que ingrese un tempo
   printf("Ingrese la “velocidad” deseada de las canciones: \n ");
-  printf("Lentas: menor 80 BPM \n");
-  printf("Moderadas: mayor o igual a 80, menor o igual a 120 \n");
-  printf("Rapidas: mayor a 120\n");
+  printf("1) Lentas: menor 80 BPM \n");
+  printf("2) Moderadas: mayor o igual a 80, menor o igual a 120 \n");
+  printf("3) Rapidas: mayor a 120\n");
   //VEERIFICAR EL SACNF Y EL TIPO DE DATO
-  scanf("%s", &opcion); // Lee el ID del teclado
+  scanf("%d", &opcion); // Lee el ID del teclado
 
   Pair *pair = firstTreeMap(canciones_tempo);
   //Song *cancion = (Song *)malloc(sizeof(Song));
@@ -179,22 +179,25 @@ void buscar_por_tempo(TreeMap* canciones_tempo){
       while (pair != NULL)
       {
         switch (cancion->tempo) {
-          case 'Lentas':
+          case '1':
           //aplicar la logica para mostrar solo las canciones con tempos lentos (menor a 80) 
             if(cancion->tempo < 80){
               printf("Canciones con tempo lento: %d \n", cancion->tempo);
+              printf("ID: %s \n Artista: %s \n Album: %s \n Canción: %s, Género: %s \n Tempo: %d \n", cancion->id, cancion->artists, cancion->album_name, cancion->track_name, cancion->track_genero, cancion->tempo);
             }
             break;
-          case 'Moderadas':
+          case '2':
           //aplicar la logica para mostrar solo las canciones con tempos Moderados (mayor o igual a 80, menor o igual a 120)
             if(cancion->tempo >= 80 && cancion->tempo <= 120){
               printf("Canciones con tempo Moderadas %d \n", cancion->tempo);
+              printf("ID: %s \n Artista: %s \n Album: %s \n Canción: %s, Género: %s \n Tempo: %d \n", cancion->id, cancion->artists, cancion->album_name, cancion->track_name, cancion->track_genero, cancion->tempo);
             }
             break;
-          case 'Rapidas':
+          case '3':
           //aplicar la logica para mostrar solo las canciones con tempos rapidas (mayor a 120)
             if(cancion->tempo > 120){
               printf("Canciones con tempo Rapidas %d \n", cancion->tempo);
+              printf("ID: %s \n Artista: %s \n Album: %s \n Canción: %s, Género: %s \n Tempo: %d \n", cancion->id, cancion->artists, cancion->album_name, cancion->track_name, cancion->track_genero, cancion->tempo);
             }
             break;
         }
@@ -215,6 +218,7 @@ int main() {
   TreeMap *canciones_byGenero = createTreeMap(lower_than_str);
   TreeMap *canciones_byTempo = createTreeMap(lower_than_int);
   TreeMap *canciones_byArtista = createTreeMap(lower_than_str);
+  List* nombre_lista;
 
   do {
     mostrarMenuPrincipal();
@@ -226,22 +230,22 @@ int main() {
       cargar_canciones(ruta,canciones_id,canciones_byGenero,canciones_byTempo,canciones_byArtista);
       break;
     case '2':
-      buscar_por_genero(canciones);
+      buscar_por_genero(canciones_byGenero);
       break;
     case '3':
-      buscar_por_artista(canciones);
+      buscar_por_artista(canciones_byArtista);
       break;
     case '4':
-      buscar_por_tempo(canciones);
+      buscar_por_tempo(canciones_byTempo);
       break;
     case '5':
-      crear_list_reproduccion(canciones);
+      crear_list_reproduccion(canciones_id, nombre_lista);
       break;
     case '6':
-      agregar_cancion_aLista(canciones);
+      //agregar_cancion_aLista(canciones);
       break;
     case '7':
-      mostrar_list_canciones(canciones);
+      //mostrar_list_canciones(canciones);
       break;
     }
     presioneTeclaParaContinuar();
