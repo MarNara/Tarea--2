@@ -124,7 +124,6 @@ void cargar_canciones(const char * ruta_archivo, TreeMap *canciones, TreeMap *po
     else
     {
       insertTreeMap(por_tempo, "Rapidas", cancion);
-;
     }
     
 
@@ -138,7 +137,7 @@ void cargar_canciones(const char * ruta_archivo, TreeMap *canciones, TreeMap *po
  */
 
 
- //en esta función 
+ //Arreglar
 void buscar_por_genero(TreeMap* cancions_bygeneros) {
   char genero[100];
 
@@ -161,7 +160,7 @@ void buscar_por_genero(TreeMap* cancions_bygeneros) {
 }
 
 
-//buscar tempo, necesito un switch
+//buscar tempo, necesito un switch, ARREGLAR
 void buscar_por_tempo(TreeMap* canciones_tempo){
   int opcion;
   //pedir al usuario que ingrese un tempo
@@ -170,7 +169,7 @@ void buscar_por_tempo(TreeMap* canciones_tempo){
   printf("2) Moderadas: mayor o igual a 80, menor o igual a 120 \n");
   printf("3) Rapidas: mayor a 120\n");
   //VEERIFICAR EL SACNF Y EL TIPO DE DATO
-  scanf("%d", &opcion); // Lee el ID del teclado
+  scanf("%c", &opcion); // Lee el ID del teclado
 
   Pair *pair = firstTreeMap(canciones_tempo);
   //Song *cancion = (Song *)malloc(sizeof(Song));
@@ -178,7 +177,7 @@ void buscar_por_tempo(TreeMap* canciones_tempo){
       Song *cancion = pair->value;
       while (pair != NULL)
       {
-        switch (cancion->tempo) {
+        switch (opcion) {
           case '1':
           //aplicar la logica para mostrar solo las canciones con tempos lentos (menor a 80) 
             if(cancion->tempo < 80){
@@ -200,7 +199,11 @@ void buscar_por_tempo(TreeMap* canciones_tempo){
               printf("ID: %s \n Artista: %s \n Album: %s \n Canción: %s, Género: %s \n Tempo: %d \n", cancion->id, cancion->artists, cancion->album_name, cancion->track_name, cancion->track_genero, cancion->tempo);
             }
             break;
+          default:
+            printf("Tempo inválido...");
+            return;
         }
+        pair = nextTreeMap(canciones_tempo);
       }
   }
 }
@@ -210,7 +213,8 @@ int main() {
                // (sin uso en este fragmento)
 
   char ruta[1000];
-  scanf("%s",ruta);
+  scanf("%c",ruta);
+
   //crear mapa de canciones
   //falta implementar treeMap
 
@@ -227,19 +231,21 @@ int main() {
 
     switch (opcion) {
     case '1':
+      puts("Ingrese ruta de cancion:");
+      scanf("%c",ruta);
       cargar_canciones(ruta,canciones_id,canciones_byGenero,canciones_byTempo,canciones_byArtista);
       break;
     case '2':
       buscar_por_genero(canciones_byGenero);
       break;
     case '3':
-      buscar_por_artista(canciones_byArtista);
+      //buscar_por_artista(canciones_byArtista);
       break;
     case '4':
       buscar_por_tempo(canciones_byTempo);
       break;
     case '5':
-      crear_list_reproduccion(canciones_id, nombre_lista);
+      //crear_list_reproduccion(canciones_id, nombre_lista);
       break;
     case '6':
       //agregar_cancion_aLista(canciones);
