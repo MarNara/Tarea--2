@@ -100,33 +100,61 @@ void cargar_canciones(const char * ruta_archivo, TreeMap *canciones, TreeMap *po
     cancion->tempo = atoi(campos[18]); // Asigna año, convirtiendo de cadena a entero
     strcpy(cancion->album_name, campos[2]);
 
-    insertTreeMap(canciones,&cancion->id,cancion);
+    insertTreeMap(canciones, cancion->id, cancion);
     
     List *generos = cancion->track_genero;
-    Song *cancion_genero = cancion;
-    List *genero_iter = list_first(generos);
-    while (genero_iter != NULL)
+    char *genero;
+    while ((genero = list_next(generos)) != NULL)
     {
-      insertTreeMap(por_genero, genero_iter->current->data, cancion_genero);
-      genero_iter = list_next(genero_iter);
-    }
-    
-    insertTreeMap(por_artista, &cancion->artists,cancion);
+      Pair *par = searchTreeMap(por_genero,genero);
+      List *lista_genero;
 
-    if (cancion->tempo < 80)
-    {
-      insertTreeMap(por_tempo, "Lentas", cancion);
+      if(par == NULL)
+      {
+        lista_genero = list_create();
+        insertTreeMap(por_genero, strdup(genero), lista_genero);
+      }
+      else
+      {
+        lista_genero = (List *)par->value;//lista con todas las canciones
+      }
+
+      list_pushBack(lista_genero, cancion);
     }
-    else if (cancion->tempo >= 80 && cancion->tempo <= 120)
+    Pair *par_artista = searchTreeMap(por_artista, cancion->artists);
+    List *lista_artista;
+
+    if(par_artista == NULL)
     {
-      insertTreeMap(por_tempo, "Modetadas",cancion);
+      lista_artista = list_create();
+      insertTreeMap(por_artista, strdup(cancion->artists), lista_artista);
     }
     else
     {
-      insertTreeMap(por_tempo, "Rapidas", cancion);
+      lista_artista = (List *)par_artista->value;
     }
-    
+    list_pushBack(lista_artista, cancion);
 
+  
+
+    char *categoria;
+    if (cancion->tempo < 80) categoria = "Lentas";
+    else if (cancion->tempo <= 120) categoria = "Moderadas";
+    else categoria = "Rapidas";
+
+    Pair *par_tempo = searchTreeMap(por_tempo, categoria);
+    List *lista_tempo;
+
+    if (par_tempo == NULL)
+    {
+      lista_tempo = list_create();
+      insertTreeMap(por_tempo, strdup(categoria), lista_tempo);
+    }
+    else
+    {
+      lista_tempo = (List *) par_tempo->value;
+    }
+    list_pushBack(lista_tempo, cancion);
   }
   fclose(archivo); // Cierra el archivo después de leer todas las líneas
 
@@ -143,20 +171,31 @@ void buscar_por_genero(TreeMap* cancions_bygeneros) {
 
   // Solicita al usuario el ID de la canción
   printf("Ingrese el género de la canción: ");
-  scanf("%99s", genero); // Lee el ID del teclado
+  scanf(" %[^\n]", genero); // Lee el ID del teclado
 
   Pair *pair = searchTreeMap(cancions_bygeneros, genero);
   
   if (pair != NULL) {
-      List* cancions = pair->value;
-      Song *cancion = list_first(cancions);
+    List* canciones = pair->value;
+    Song *cancion = list_first(canciones);
       
-      while (cancion != NULL) {
-        printf("ID: %s, Canción: %s, artists: %s, Tempo: %d\n", cancion->id, cancion->track_name,
-           cancion->artists, cancion->tempo);
-        cancion = list_next(cancions);
+    while (cancion != NULL) { 
+      char* genero2 = list_first(cancion->track_genero);
+        
+      while(genero2 != NULL){
+        printf("ID: %s \n Artista: %s \n Album: %s \n Canción: %s, Género: %s \n Tempo: %d \n", 
+          cancion->id, cancion->artists, cancion->album_name, cancion->track_name, genero, cancion->tempo);
+        cancion = list_next(canciones);
       }
+        
+        
+        //presioneTeclaParaContinuar();
+    }
   }
+  else{
+    printf("No se han encontardo canciones del género %s", genero);
+  }
+  presioneTeclaParaContinuar();
 }
 
 
@@ -169,56 +208,90 @@ void buscar_por_tempo(TreeMap* canciones_tempo){
   printf("2) Moderadas: mayor o igual a 80, menor o igual a 120 \n");
   printf("3) Rapidas: mayor a 120\n");
   //VEERIFICAR EL SACNF Y EL TIPO DE DATO
-  scanf("%c", &opcion); // Lee el ID del teclado
-
-  Pair *pair = firstTreeMap(canciones_tempo);
+  scanf("%d", &opcion); // Lee el ID del teclado
+  char* clave;
+  switch(opcion){
+    case 1 : 
+      clave = "Lentas";
+      break;
+    case 2 :
+      clave = "Moderadas";
+      break;
+    case 3 :
+      clave = "Rapidas";
+      break;
+    default :
+      printf("Opción Invalida");
+      return;
+  }
+  Pair* pair = searchTreeMap(canciones_tempo, clave);
+  
   //Song *cancion = (Song *)malloc(sizeof(Song));
   if (pair != NULL) {
-      Song *cancion = pair->value;
-      while (pair != NULL)
-      {
-        switch (opcion) {
-          case '1':
-          //aplicar la logica para mostrar solo las canciones con tempos lentos (menor a 80) 
-            if(cancion->tempo < 80){
-              printf("Canciones con tempo lento: %d \n", cancion->tempo);
-              printf("ID: %s \n Artista: %s \n Album: %s \n Canción: %s, Género: %s \n Tempo: %d \n", cancion->id, cancion->artists, cancion->album_name, cancion->track_name, cancion->track_genero, cancion->tempo);
-            }
-            break;
-          case '2':
-          //aplicar la logica para mostrar solo las canciones con tempos Moderados (mayor o igual a 80, menor o igual a 120)
-            if(cancion->tempo >= 80 && cancion->tempo <= 120){
-              printf("Canciones con tempo Moderadas %d \n", cancion->tempo);
-              printf("ID: %s \n Artista: %s \n Album: %s \n Canción: %s, Género: %s \n Tempo: %d \n", cancion->id, cancion->artists, cancion->album_name, cancion->track_name, cancion->track_genero, cancion->tempo);
-            }
-            break;
-          case '3':
-          //aplicar la logica para mostrar solo las canciones con tempos rapidas (mayor a 120)
-            if(cancion->tempo > 120){
-              printf("Canciones con tempo Rapidas %d \n", cancion->tempo);
-              printf("ID: %s \n Artista: %s \n Album: %s \n Canción: %s, Género: %s \n Tempo: %d \n", cancion->id, cancion->artists, cancion->album_name, cancion->track_name, cancion->track_genero, cancion->tempo);
-            }
-            break;
-          default:
-            printf("Tempo inválido...");
-            return;
-        }
-        pair = nextTreeMap(canciones_tempo);
-      }
+    List* canciones = pair->value;
+    Song *cancion = list_first(canciones);
+    while (pair != NULL)
+    {
+      printf("ID: %s \n Artista: %s \n Album: %s \n Canción: %s, Género: %s \n Tempo: %d \n", 
+        cancion->id, cancion->artists, cancion->album_name, cancion->track_name, cancion->track_genero, cancion->tempo); 
+      cancion = list_next(canciones);
+      //presioneTeclaParaContinuar();   
+    }
+    //pair = nextTreeMap(canciones_tempo);
   }
+  else{
+    printf("Tempo inválido...");
+  }
+  presioneTeclaParaContinuar();
+}
+
+void buscar_por_artista(TreeMap *cancionesPorArtistas) {
+  char artista[100];
+  printf("Ingrese nombre del artista: ");
+  fgets(artista, sizeof(artista), stdin);
+  
+  // Elimina el salto de línea final si existe
+  artista[strcspn(artista, "\n")] = '\0';
+
+  Pair *par = searchTreeMap(cancionesPorArtistas, artista);
+  if (par == NULL) {
+      puts("Artista no encontrado");
+      return;
+  }
+  
+  List *canciones = (List *)par->value;
+  Song *cancion = list_first(canciones);
+  while (cancion != NULL) {
+      // Mostrar géneros correctamente
+      printf("🎵 %s - %s (Album: %s, Tempo: %d)\n", 
+             cancion->track_name, 
+             cancion->artists, 
+             cancion->album_name, 
+             cancion->tempo);
+      
+      printf("Géneros: ");
+      char *genero = list_first(cancion->track_genero);
+      while (genero != NULL) {
+          printf("%s, ", genero);
+          genero = list_next(cancion->track_genero);
+      }
+      printf("\n\n");
+      
+      cancion = list_next(canciones);
+  }
+  presioneTeclaParaContinuar();
 }
 
 int main() {
   char opcion; // Variable para almacenar una opción ingresada por el usuario
                // (sin uso en este fragmento)
-
   char ruta[1000];
-  scanf("%c",ruta);
+
 
   //crear mapa de canciones
   //falta implementar treeMap
 
-  TreeMap *canciones_id = createTreeMap(lower_than_int);
+  TreeMap *canciones_id = createTreeMap(lower_than_str);
   TreeMap *canciones_byGenero = createTreeMap(lower_than_str);
   TreeMap *canciones_byTempo = createTreeMap(lower_than_int);
   TreeMap *canciones_byArtista = createTreeMap(lower_than_str);
@@ -228,18 +301,19 @@ int main() {
     mostrarMenuPrincipal();
     printf("Ingrese su opción: ");
     scanf(" %c", &opcion);
+    getchar();
 
     switch (opcion) {
     case '1':
       puts("Ingrese ruta de cancion:");
-      scanf("%c",ruta);
-      cargar_canciones(ruta,canciones_id,canciones_byGenero,canciones_byTempo,canciones_byArtista);
+      scanf(" %c",ruta);  
+      cargar_canciones(ruta,canciones_id,canciones_byGenero,canciones_byArtista,canciones_byTempo);
       break;
     case '2':
       buscar_por_genero(canciones_byGenero);
       break;
     case '3':
-      //buscar_por_artista(canciones_byArtista);
+      buscar_por_artista(canciones_byArtista);
       break;
     case '4':
       buscar_por_tempo(canciones_byTempo);
