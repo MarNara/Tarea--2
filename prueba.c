@@ -5,170 +5,173 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
+#include <windows.h> 
 
-int lower_than_int(void* a, void* b) {
-    return (*(int*)a < *(int*)b);
+int lower_than_str(void* a, void* b) 
+{
+  return strcmp((char*)a, (char*)b) < 0;
+}
+void mostrarMenuPrincipal() {
+  limpiarPantalla();
+  puts("========================================");
+  puts("     Base de Datos de Canciones");
+  puts("========================================");
+
+  puts("1) Cargar Canciones");
+  puts("2) Buscar por Género");
+  puts("3) Buscar por Artista");
+  puts("4) Buscar por Tempo");
+  puts("5) Crear Lista de Reproducción");
+  puts("6) Agregar Canción a Lista");
+  puts("7) Mostrar Canciones de una Lista");
+  puts("8) Salir");
 }
 
-int lower_than_str(void* a, void* b) {
-    return strcmp((char*)a, (char*)b) < 0;
-}
+typedef struct {
+  char id[100];
+  char artists[100];
+  char track_name[100];
+  char track_gener[100];
+  char album_name[300];
+  float tempo;
+} Song;
 
-int lower_than_float(void* a, void* b) {
-    return (*(float*)a < *(float*)b);
-}
-
-  typedef struct {
-    char id[100];
-    char artists[100];
-    char track_name[100];
-    List *track_gener;
-    char album_name[300];
-    int tempo;
-  } Song;
-
-  int is_equal_int(void *key1, void *key2) {
-    return *(int *)key1 == *(int *)key2; // Compara valores enteros directamente
-  }
-
-void cargar_canciones(const char * ruta_archivo, TreeMap *canciones, TreeMap *por_genero, TreeMap *por_artista, TreeMap *por_tempo) {
-    FILE *archivo = fopen(ruta_archivo, "r");
-    if (archivo == NULL) {
-      perror(
-          "Error al abrir el archivo");
-      return;
-    }
-  
-    char **campos;
-    
-    campos = leer_linea_csv(archivo, ','); 
-  
-    while ((campos = leer_linea_csv(archivo, ',')) != NULL) 
+void cargarArchivo(const char *ruta, TreeMap* cancionesID) 
+{
+    FILE *archivo = fopen(ruta, "r");
+    if (archivo == NULL) 
     {
-      Song *cancion = (Song *)malloc(sizeof(Song));
-      strcpy(cancion->id, campos[0]);        // Asigna ID
-      strcpy(cancion->track_name, campos[4]);     // Asigna título
-      strcpy(cancion->artists, campos[2]); // Asigna artists
-      cancion->track_gener = split_string(campos[20], ",");       // Inicializa la lista de géneros
-      cancion->tempo = atoi(campos[18]); // Asigna año, convirtiendo de cadena a entero
-      strcpy(cancion->album_name, campos[3]);
-  
-      insertTreeMap(canciones, cancion->id, cancion);
-      
-      List *generos = cancion->track_gener;
-      char *genero;
-      while ((genero = list_next(generos)) != NULL)
-      {
-        Pair *par = searchTreeMap(por_genero,genero);
-        List *lista_genero;
-  
-        if(par == NULL)
-        {
-          lista_genero = list_create();
-          insertTreeMap(por_genero, strdup(genero), lista_genero);
-        }
-        else
-        {
-          lista_genero = (List *)par->value;//lista con todas las canciones
-        }
-  
-        list_pushBack(lista_genero, cancion);
-      }
-      
-    // Normalizar el nombre del artista a minúsculas
-    char artista_normalizado[100];
-    strcpy(artista_normalizado, cancion->artists);  // Copia el nombre original
-    for (int i = 0; artista_normalizado[i]; i++) {
-      artista_normalizado[i] = tolower(artista_normalizado[i]);
-    }                  // Convierte a minúsculas
-  
-    // Buscar o insertar en el mapa con la clave normalizada
-    Pair *par_artista = searchTreeMap(por_artista, artista_normalizado);
-    List *lista_artista;
-  
-    if (par_artista == NULL) {
-        lista_artista = list_create();
-        insertTreeMap(por_artista, strdup(artista_normalizado), lista_artista);  // Usa la versión normalizada
-    } else {
-        lista_artista = (List *)par_artista->value;
+        perror("Error al abrir el archivo");
+        presioneTeclaParaContinuar();
+        return;
     }
-    list_pushBack(lista_artista, cancion);
-    
-  
-      char *categoria;
-      if (cancion->tempo < 80) categoria = "Lentas";
-      else if (cancion->tempo <= 120) categoria = "Moderadas";
-      else categoria = "Rapidas";
-  
-      Pair *par_tempo = searchTreeMap(por_tempo, categoria);
-      List *lista_tempo;
-  
-      if (par_tempo == NULL)
-      {
-        lista_tempo = list_create();
-        insertTreeMap(por_tempo, strdup(categoria), lista_tempo);
-      }
-      else
-      {
-        lista_tempo = (List *) par_tempo->value;
-      }
-      list_pushBack(lista_tempo, cancion);
+
+    // Leer y descartar la primera línea (cabeceras)
+    char **cabeceras = leer_linea_csv(archivo, ',');
+    if (cabeceras == NULL) {
+        printf("Archivo vacío o con formato incorrecto\n");
+        presioneTeclaParaContinuar();
+        fclose(archivo);
+        return;
     }
-    fclose(archivo); // Cierra el archivo después de leer todas las líneas
-  
+
+    // campos queda como un arreglo en el cual es guardado la cada dato
+    char **campos;
+    while ((campos = leer_linea_csv(archivo, ',')) != NULL)
+    {
+        Song *cancion = (Song *)malloc(sizeof(Song));
+        if (cancion == NULL) {
+            perror("Error al asignar memoria para canción");
+            presioneTeclaParaContinuar();
+            continue;
+        }
+
+        // Asignaciones seguras con strncpy
+        strncpy(cancion->id, campos[0], sizeof(cancion->id) - 1);
+        strncpy(cancion->track_name, campos[4], sizeof(cancion->track_name) - 1);
+        strncpy(cancion->artists, campos[2], sizeof(cancion->artists) - 1);
+        strncpy(cancion->album_name, campos[3], sizeof(cancion->album_name) - 1);
+        strncpy(cancion->track_gener, campos[20], sizeof(cancion->track_gener) - 1);
+        cancion->tempo = atof(campos[18]);
+
+        insertTreeMap(cancionesID, cancion->id, cancion);
+
+        
+    }
+
+
+
+
+    printf("Archivo cargado perfectamente\n");
+
+    presioneTeclaParaContinuar();
+    fclose(archivo);
+}
+
+// Función para imprimir los datos de una canción individual
+void imprimir_cancion(Song *cancion) {
+  if (cancion == NULL) {
+      printf("Canción no encontrada.\n");
+      return;
   }
+  
+  printf("\n=== Detalles de la Canción ===\n");
+  printf("ID: %s\n", cancion->id);
+  printf("Título: %s\n", cancion->track_name);
+  printf("Artista(s): %s\n", cancion->artists);
+  printf("Álbum: %s\n", cancion->album_name);
+  printf("Género(s): %s\n", cancion->track_gener);
+  printf("Tempo: %d BPM\n", cancion->tempo);
+  printf("=============================\n");
+  presioneTeclaParaContinuar();
+}
+
+void buscar_imprimir_por_id(TreeMap *canciones) {
+  if (canciones == NULL) {
+      printf("No hay canciones cargadas.\n");
+      return;
+  }
+  
+  char id_buscar[100];
+  printf("\nIngrese el ID de la canción a buscar: ");
+  scanf("%99s", id_buscar);
+  getchar(); // Limpiar el buffer de entrada
+  
+  Pair *resultado = searchTreeMap(canciones, id_buscar);
+  if (resultado != NULL) {
+      imprimir_cancion((Song*)resultado->value);
+  } else {
+      printf("No se encontró una canción con el ID: %s\n", id_buscar);
+  }
+}
 
 
-  int main() {
-    char ruta[1000];
-    TreeMap *canciones_id = createTreeMap(lower_than_str);
-    TreeMap *canciones_byGenero = createTreeMap(lower_than_str);
-    TreeMap *canciones_byTempo = createTreeMap(lower_than_int);
-    TreeMap *canciones_byArtista = createTreeMap(lower_than_str);
+int main() 
+{
+  SetConsoleOutputCP(65001); //esta funcion sirve para poner el formato UTF-8 sirve para mostrar los caractares españoles
+
+  TreeMap *canciones_id = createTreeMap(lower_than_str); //se crea el mapa ordenado de canciones
+
+  char ruta[1000]; //variable ruta para mas tarde;
+  char opcion; // variable opcion
+
+  do // bucle de menú
+  {
+    mostrarMenuPrincipal();
+    printf("Ingrese su opción: ");
+    scanf("%c", &opcion); //obtengo la opcion
+    getchar(); // Limpiar el buffer después de scanf
     
-    printf("Directorio actual: ");
-    system("pwd"); // Muestra dónde busca el archivo
-    
-    printf("\nIngrese ruta del archivo (sin comillas): ");
-    scanf("%999[^\n]", ruta);
-    getchar();
+    switch(opcion) 
+    {
+      case '1': 
+        limpiarPantalla();
+        printf("Ingrese la ubicación del archivo CSV: ");
+        fgets(ruta, sizeof(ruta), stdin); // se obtiene la ruta
+        ruta[strcspn(ruta, "\n")] = '\0'; // se le quita el \n de al final
+        cargarArchivo(ruta, canciones_id); // se mete a la funcion
+        break;
 
-    // Eliminar comillas si las hay
-    if (ruta[0] == '"' && ruta[strlen(ruta)-1] == '"') {
-        memmove(ruta, ruta+1, strlen(ruta));
-        ruta[strlen(ruta)-1] = '\0';
-    }
+      case '2':
+        limpiarPantalla();
+        //buscar_por_genero(canciones_byGenero);
+        break;
+      
+      case '3':
+        limpiarPantalla();
+        //buscar_por_artista(canciones_byArtista);
+        break;
 
-    printf("Intentando abrir: %s\n", ruta);
-    
-    cargar_canciones(ruta, canciones_id, canciones_byGenero, canciones_byArtista, canciones_byTempo);
-
-    // Verificar si se cargaron canciones
-    Pair *pair = firstTreeMap(canciones_id);
-    if (pair == NULL) {
-        printf("\nNo se cargaron canciones. Verifica:\n");
-        printf("1. Que el archivo existe en la ruta especificada\n");
-        printf("2. Que tienes permisos de lectura\n");
-        printf("3. Que el formato del archivo es correcto\n");
-        return 1;
-    }
-
-    // También podemos verificar algunos artistas cargados
-    printf("\nAlgunos artistas cargados:\n");
-    printf("=========================\n");
-    pair = firstTreeMap(canciones_byArtista);
-    int contador = 0;
-    
-    while (pair != NULL && contador < 5) {
-        printf("Artista: %s (%d canciones)\n", 
-               (char *)pair->key, 
-               list_size((List *)pair->value));
-        pair = nextTreeMap(canciones_byArtista);
-        contador++;
-    }
-
-    return 0;
+      case '8':
+        printf("Saliendo del programa...\n");
+        break;
+      default:
+        printf("Opción no válida. Intente nuevamente.\n");
+        presioneTeclaParaContinuar();
+      }
+  } while (opcion != '8');
+  
+  return 0;
 }
 
 //gcc tdas/*.c prueba.c -Wno-unused-result -o test.exe
