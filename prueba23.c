@@ -32,6 +32,7 @@ int lower_than_float(void* a, void* b) {
     return *(int *)key1 == *(int *)key2; // Compara valores enteros directamente
   }
 
+
 void cargar_canciones(const char * ruta_archivo, TreeMap *canciones, TreeMap *por_genero, TreeMap *por_artista, TreeMap *por_tempo) {
     FILE *archivo = fopen(ruta_archivo, "r");
     if (archivo == NULL) {
@@ -50,31 +51,35 @@ void cargar_canciones(const char * ruta_archivo, TreeMap *canciones, TreeMap *po
       strcpy(cancion->id, campos[0]);        // Asigna ID
       strcpy(cancion->track_name, campos[4]);     // Asigna título
       strcpy(cancion->artists, campos[2]); // Asigna artists
-      cancion->track_gener = split_string(campos[20], ",");       // Inicializa la lista de géneros
-      cancion->tempo = atoi(campos[18]); // Asigna año, convirtiendo de cadena a entero
       strcpy(cancion->album_name, campos[3]);
+      cancion->tempo = atof(campos[18]); // Asigna año, convirtiendo de cadena a entero
+      cancion->track_gener = split_string(campos[20], ",");       // Inicializa la lista de géneros
+      
   
       insertTreeMap(canciones, cancion->id, cancion);
       
       List *generos = cancion->track_gener;
-      char *genero;
-      while ((genero = list_next(generos)) != NULL)
-      {
-        Pair *par = searchTreeMap(por_genero,genero);
-        List *lista_genero;
-  
-        if(par == NULL)
+      if (list_size(generos) > 0) {
+        char *genero = list_first(generos);
+        while (genero != NULL)
         {
-          lista_genero = list_create();
-          insertTreeMap(por_genero, strdup(genero), lista_genero);
-        }
-        else
-        {
-          lista_genero = (List *)par->value;//lista con todas las canciones
-        }
+            Pair *par = searchTreeMap(por_genero,genero);
+            List *lista_genero;
   
-        list_pushBack(lista_genero, cancion);
-      }
+            if(par == NULL)
+            {
+            lista_genero = list_create();
+            insertTreeMap(por_genero, strdup(genero), lista_genero);
+            }
+            else
+            {
+            lista_genero = (List *)par->value;//lista con todas las canciones
+            }
+            list_pushBack(lista_genero, cancion);
+            genero = list_next(generos);
+        }
+    }
+      
       
     // Normalizar el nombre del artista a minúsculas
     char artista_normalizado[100];
@@ -171,6 +176,11 @@ void cargar_canciones(const char * ruta_archivo, TreeMap *canciones, TreeMap *po
     return 0;
 }
 
-//gcc tdas/*.c prueba.c -Wno-unused-result -o test.exe
+
+//gcc tdas/*.c prueba23.c -Wno-unused-result -o test.exe
+
+/*compilar para ver otros errores:
+        gcc -Wall -Wextra tdas/extra.c tdas/list.c tdas/treemap.c tdas/map.c prueba23.c -o test.exe
+*/
 
 //./test.exe

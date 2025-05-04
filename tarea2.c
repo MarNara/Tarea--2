@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>//es para tolower
 
 int lower_than_int(void* a, void* b) {
   return (*(int*)a < *(int*)b);
@@ -19,12 +20,12 @@ int lower_than_float(void* a, void* b) {
 }
 
 //estructura de las canciones
-// id, artists, album_name, track_name, tempo y track_genero
+// id, artists, album_name, track_name, tempo y track_gener
 typedef struct {
   char id[100];
   char artists[100];
   char track_name[100];
-  List *track_genero;
+  List *track_gener;
   char album_name[300];
   int tempo;
 } Song;
@@ -96,13 +97,13 @@ void cargar_canciones(const char * ruta_archivo, TreeMap *canciones, TreeMap *po
     strcpy(cancion->id, campos[0]);        // Asigna ID
     strcpy(cancion->track_name, campos[5]);     // Asigna título
     strcpy(cancion->artists, campos[3]); // Asigna artists
-    cancion->track_genero = split_string(campos[20], ",");       // Inicializa la lista de géneros
+    cancion->track_gener = split_string(campos[20], ",");       // Inicializa la lista de géneros
     cancion->tempo = atoi(campos[18]); // Asigna año, convirtiendo de cadena a entero
     strcpy(cancion->album_name, campos[2]);
 
     insertTreeMap(canciones, cancion->id, cancion);
     
-    List *generos = cancion->track_genero;
+    List *generos = cancion->track_gener;
     char *genero;
     while ((genero = list_next(generos)) != NULL)
     {
@@ -235,7 +236,7 @@ void buscar_por_tempo(TreeMap* canciones_tempo){
     while (pair != NULL)
     {
       printf("ID: %s \n Artista: %s \n Album: %s \n Canción: %s, Género: %s \n Tempo: %d \n\n", 
-        cancion->id, cancion->artists, cancion->album_name, cancion->track_name, cancion->track_genero, cancion->tempo); 
+        cancion->id, cancion->artists, cancion->album_name, cancion->track_name, cancion->track_gener, cancion->tempo); 
       cancion = list_next(canciones);
       //presioneTeclaParaContinuar();   
     }
