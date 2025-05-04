@@ -2,7 +2,8 @@
   "files.associations": {
     "cstdlib": "c",
     "hashmap.h": "c",
-    "stdio.h": "c"
+    "stdio.h": "c",
+    "string.h": "c"
   },
   "C_Cpp_Runner.cCompilerPath": "gcc",
   "C_Cpp_Runner.cppCompilerPath": "g++",

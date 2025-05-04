@@ -121,20 +121,25 @@ void cargar_canciones(const char * ruta_archivo, TreeMap *canciones, TreeMap *po
 
       list_pushBack(lista_genero, cancion);
     }
-    Pair *par_artista = searchTreeMap(por_artista, cancion->artists);
-    List *lista_artista;
+    
+  // Normalizar el nombre del artista a minúsculas
+  char artista_normalizado[100];
+  strcpy(artista_normalizado, cancion->artists);  // Copia el nombre original
+  for (int i = 0; artista_normalizado[i]; i++) {
+    artista_normalizado[i] = tolower(artista_normalizado[i]);
+  }                  // Convierte a minúsculas
 
-    if(par_artista == NULL)
-    {
+  // Buscar o insertar en el mapa con la clave normalizada
+  Pair *par_artista = searchTreeMap(por_artista, artista_normalizado);
+  List *lista_artista;
+
+  if (par_artista == NULL) {
       lista_artista = list_create();
-      insertTreeMap(por_artista, strdup(cancion->artists), lista_artista);
-    }
-    else
-    {
+      insertTreeMap(por_artista, strdup(artista_normalizado), lista_artista);  // Usa la versión normalizada
+  } else {
       lista_artista = (List *)par_artista->value;
-    }
-    list_pushBack(lista_artista, cancion);
-
+  }
+  list_pushBack(lista_artista, cancion);
   
 
     char *categoria;
@@ -178,16 +183,13 @@ void buscar_por_genero(TreeMap* cancions_bygeneros) {
   if (pair != NULL) {
     List* canciones = pair->value;
     Song *cancion = list_first(canciones);
-      
-    while (cancion != NULL) { 
-      char* genero2 = list_first(cancion->track_genero);
-        
-      while(genero2 != NULL){
-        printf("ID: %s \n Artista: %s \n Album: %s \n Canción: %s, Género: %s \n Tempo: %d \n", 
-          cancion->id, cancion->artists, cancion->album_name, cancion->track_name, genero, cancion->tempo);
-        cancion = list_next(canciones);
-      }
-        
+    int contador = 0;
+    printf("canciones del genero: %s", genero);
+    while (cancion != NULL) {  
+      printf("ID: %s \n Artista: %s \n Album: %s \n Canción: %s \n Tempo: %d \n", 
+        cancion->id, cancion->artists, cancion->album_name, cancion->track_name, cancion->tempo);
+      contador++;
+      cancion = list_next(canciones);  
         
         //presioneTeclaParaContinuar();
     }
@@ -232,7 +234,7 @@ void buscar_por_tempo(TreeMap* canciones_tempo){
     Song *cancion = list_first(canciones);
     while (pair != NULL)
     {
-      printf("ID: %s \n Artista: %s \n Album: %s \n Canción: %s, Género: %s \n Tempo: %d \n", 
+      printf("ID: %s \n Artista: %s \n Album: %s \n Canción: %s, Género: %s \n Tempo: %d \n\n", 
         cancion->id, cancion->artists, cancion->album_name, cancion->track_name, cancion->track_genero, cancion->tempo); 
       cancion = list_next(canciones);
       //presioneTeclaParaContinuar();   
@@ -248,36 +250,28 @@ void buscar_por_tempo(TreeMap* canciones_tempo){
 void buscar_por_artista(TreeMap *cancionesPorArtistas) {
   char artista[100];
   printf("Ingrese nombre del artista: ");
-  fgets(artista, sizeof(artista), stdin);
-  
-  // Elimina el salto de línea final si existe
-  artista[strcspn(artista, "\n")] = '\0';
+  scanf("%99[^\n]", artista);
+  getchar();  // Limpiar el buffer
+
+  // Normalizar entrada a minúsculas
+  for (int i = 0; artista[i]; i++) {
+      artista[i] = tolower(artista[i]);
+  }
 
   Pair *par = searchTreeMap(cancionesPorArtistas, artista);
-  if (par == NULL) {
-      puts("Artista no encontrado");
-      return;
-  }
-  
-  List *canciones = (List *)par->value;
-  Song *cancion = list_first(canciones);
-  while (cancion != NULL) {
-      // Mostrar géneros correctamente
-      printf("🎵 %s - %s (Album: %s, Tempo: %d)\n", 
-             cancion->track_name, 
-             cancion->artists, 
-             cancion->album_name, 
-             cancion->tempo);
-      
-      printf("Géneros: ");
-      char *genero = list_first(cancion->track_genero);
-      while (genero != NULL) {
-          printf("%s, ", genero);
-          genero = list_next(cancion->track_genero);
+  if (par != NULL) {
+      List *canciones = (List *)par->value;
+      Song *cancion = list_first(canciones);
+      while (cancion != NULL) {
+          printf("🎵 %s - %s (Álbum: %s, Tempo: %d)\n", 
+                 cancion->track_name, 
+                 cancion->artists, 
+                 cancion->album_name, 
+                 cancion->tempo);
+          cancion = list_next(canciones);
       }
-      printf("\n\n");
-      
-      cancion = list_next(canciones);
+  } else {
+      printf("Artista '%s' no encontrado.\n", artista);
   }
   presioneTeclaParaContinuar();
 }
@@ -305,9 +299,10 @@ int main() {
 
     switch (opcion) {
     case '1':
-      puts("Ingrese ruta de cancion:");
-      scanf(" %c",ruta);  
-      cargar_canciones(ruta,canciones_id,canciones_byGenero,canciones_byArtista,canciones_byTempo);
+      printf("Ingrese ruta del archivo: ");
+      scanf("%999[^\n]", ruta);  // Lee toda la línea (hasta 999 caracteres)
+      getchar();  // Elimina el '\n' residual
+      cargar_canciones(ruta, canciones_id, canciones_byGenero, canciones_byArtista, canciones_byTempo);
       break;
     case '2':
       buscar_por_genero(canciones_byGenero);
