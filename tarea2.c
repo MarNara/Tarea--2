@@ -5,33 +5,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>//es para tolower
-
-int lower_than_int(void* a, void* b) {
-  return (*(int*)a < *(int*)b);
-}
-
-int lower_than_str(void* a, void* b) {
-  return strcmp((char*)a, (char*)b) < 0;
-}
-
-int lower_than_float(void* a, void* b) {
-   return (*(float*)a < *(float*)b);
-}
+#include <stdbool.h>
+#include <windows.h> 
 
 //estructura de las canciones
-// id, artists, album_name, track_name, tempo y track_gener
+// id, artists, album_name, track_name, tempo y track_genre
 typedef struct {
   char id[100];
   char artists[100];
   char track_name[100];
-  List *track_gener;
+  char track_genre[100];
   char album_name[300];
-  int tempo;
+  float tempo;
 } Song;
 
-
-// Menú principal
+int lower_than_str(void* a, void* b) 
+{
+  return strcmp((char*)a, (char*)b) < 0;
+}
 void mostrarMenuPrincipal() {
   limpiarPantalla();
   puts("========================================");
@@ -48,62 +39,69 @@ void mostrarMenuPrincipal() {
   puts("8) Salir");
 }
 
-/**
- * Compara dos claves de tipo string para determinar si son iguales.
- * Esta función se utiliza para inicializar mapas con claves de tipo string.
- *
- * @param key1 Primer puntero a la clave string.
- * @param key2 Segundo puntero a la clave string.
- * @return Retorna 1 si las claves son iguales, 0 de lo contrario.
- */
-int is_equal_str(void *key1, void *key2) {
-  return strcmp((char *)key1, (char *)key2) == 0;
-}
 
-/**
- * Compara dos claves de tipo entero para determinar si son iguales.
- * Esta función se utiliza para inicializar mapas con claves de tipo entero.
- *
- * @param key1 Primer puntero a la clave entera.
- * @param key2 Segundo puntero a la clave entera.
- * @return Retorna 1 si las claves son iguales, 0 de lo contrario.
- */
-int is_equal_int(void *key1, void *key2) {
-  return *(int *)key1 == *(int *)key2; // Compara valores enteros directamente
-}
+void cargarArchivo(const char *ruta, TreeMap* cancionesID,TreeMap* cancionesGenero) 
+{
+    List *lista_id = list_create();
 
-/**
- * Carga películas desde un archivo CSV y las almacena en un mapa por ID.
- */
-void cargar_canciones(const char * ruta_archivo, TreeMap *canciones, TreeMap *por_genero, TreeMap *por_artista, TreeMap *por_tempo) {
-  // Intenta abrir el archivo CSV que contiene datos de películas
-  FILE *archivo = fopen(ruta_archivo, "r");
-  if (archivo == NULL) {
-    perror(
-        "Error al abrir el archivo"); // Informa si el archivo no puede abrirse
-    return;
+    FILE *archivo = fopen(ruta, "r");
+    if (archivo == NULL) 
+    {
+        perror("Error al abrir el archivo");
+        presioneTeclaParaContinuar();
+        return;
+    }
+
+    // Leer y descartar la primera línea (cabeceras)
+    char **cabeceras = leer_linea_csv(archivo, ',');
+    if (cabeceras == NULL) {
+        printf("Archivo vacío o con formato incorrecto\n");
+        presioneTeclaParaContinuar();
+        fclose(archivo);
+        return;
+    }
+
+    // campos queda como un arreglo en el cual es guardado la cada dato
+    char **campos;
+    while ((campos = leer_linea_csv(archivo, ',')) != NULL)
+    {
+      Song *cancion = (Song *)malloc(sizeof(Song));
+      if (cancion == NULL) {
+        perror("Error al asignar memoria para canción");
+        presioneTeclaParaContinuar();
+        continue;
+      }
+
+      // Asignaciones seguras con strncpy
+      strncpy(cancion->id, campos[0], sizeof(cancion->id) - 1);
+      strncpy(cancion->track_name, campos[4], sizeof(cancion->track_name) - 1);
+      strncpy(cancion->artists, campos[2], sizeof(cancion->artists) - 1);
+      strncpy(cancion->album_name, campos[3], sizeof(cancion->album_name) - 1);
+      strncpy(cancion->track_genre, campos[20], sizeof(cancion->track_genre) - 1);
+      cancion->tempo = atof(campos[18]);
+
+      insertTreeMap(cancionesID, cancion->id, cancion);
+
+      if (searchTreeMap(cancionesGenero, cancion->track_genre) == NULL)
+      {
+        list_pushCurrent(lista_id, cancion->id);
+        insertTreeMap(cancionesGenero,cancion->track_genre,lista_id);
+      }
+      else
+      {
+        list_pushCurrent(lista_id, cancion->id);
+        insertTreeMap(cancionesGenero,cancion->track_genre,lista_id);
+      }
+
+  printf("Archivo cargado perfectamente\n");
+
+  presioneTeclaParaContinuar();
+  fclose(archivo);
   }
+}
 
-  char **campos;
-  // Leer y parsear una línea del archivo CSV. La función devuelve un array de
-  // strings, donde cada elemento representa un campo de la línea CSV procesada.
-  campos = leer_linea_csv(archivo, ','); // Lee los encabezados del CSV
-
-  // Lee cada línea del archivo CSV hasta el final
-  while ((campos = leer_linea_csv(archivo, ',')) != NULL) 
-  {
-    // Crea una nueva estructura Film y almacena los datos de cada película
-    Song *cancion = (Song *)malloc(sizeof(Song));
-    strcpy(cancion->id, campos[0]);        // Asigna ID
-    strcpy(cancion->track_name, campos[5]);     // Asigna título
-    strcpy(cancion->artists, campos[3]); // Asigna artists
-    cancion->track_gener = split_string(campos[20], ",");       // Inicializa la lista de géneros
-    cancion->tempo = atoi(campos[18]); // Asigna año, convirtiendo de cadena a entero
-    strcpy(cancion->album_name, campos[2]);
-
-    insertTreeMap(canciones, cancion->id, cancion);
-    
-    List *generos = cancion->track_gener;
+/*
+    List *generos = cancion->track_genre;
     char *genero;
     while ((genero = list_next(generos)) != NULL)
     {
@@ -165,6 +163,7 @@ void cargar_canciones(const char * ruta_archivo, TreeMap *canciones, TreeMap *po
   fclose(archivo); // Cierra el archivo después de leer todas las líneas
 
 }
+*/
 
 /**
  * Busca y muestra la información de una película por su ID en un mapa.
@@ -206,7 +205,7 @@ void buscar_por_genero(TreeMap* cancions_bygeneros) {
 void buscar_por_tempo(TreeMap* canciones_tempo){
   int opcion;
   //pedir al usuario que ingrese un tempo
-  printf("Ingrese la “velocidad” deseada de las canciones: \n ");
+  printf("Ingrese la “velocidad” deseada de las canciones: \n");
   printf("1) Lentas: menor 80 BPM \n");
   printf("2) Moderadas: mayor o igual a 80, menor o igual a 120 \n");
   printf("3) Rapidas: mayor a 120\n");
@@ -236,7 +235,7 @@ void buscar_por_tempo(TreeMap* canciones_tempo){
     while (pair != NULL)
     {
       printf("ID: %s \n Artista: %s \n Album: %s \n Canción: %s, Género: %s \n Tempo: %d \n\n", 
-        cancion->id, cancion->artists, cancion->album_name, cancion->track_name, cancion->track_gener, cancion->tempo); 
+        cancion->id, cancion->artists, cancion->album_name, cancion->track_name, cancion->track_genre, cancion->tempo); 
       cancion = list_next(canciones);
       //presioneTeclaParaContinuar();   
     }
@@ -277,56 +276,83 @@ void buscar_por_artista(TreeMap *cancionesPorArtistas) {
   presioneTeclaParaContinuar();
 }
 
-int main() {
-  char opcion; // Variable para almacenar una opción ingresada por el usuario
-               // (sin uso en este fragmento)
-  char ruta[1000];
+void crear_lista_reproduccion(TreeMap* canciones_id){
+  //verificar si existe
+  char nombre_lista[100];
+  bool nombre_lista_valida = false;
+  /*
+  while(!nombre_lista_valida){
+    if (searchTreeMap(crear_lista_reproduccion, nombre_lista) != NULL){
+      printf("ya existe una lista con el nombre %s", );
+
+    }
+  }
+  */
+  //preguntar al ususario porqué nombre quiere para implementar la lista
+  printf("Ingrese el nombre para la nueva lista:");
+  scanf("%99[^\n]", &nombre_lista);
+  getchar();
+
+  //debo verificar si ya existe el nombre de la lista
+
+}
 
 
-  //crear mapa de canciones
-  //falta implementar treeMap
+int main() 
+{
+  SetConsoleOutputCP(65001); //esta funcion sirve para poner el formato UTF-8 sirve para mostrar los caractares españoles
 
   TreeMap *canciones_id = createTreeMap(lower_than_str);
   TreeMap *canciones_byGenero = createTreeMap(lower_than_str);
-  TreeMap *canciones_byTempo = createTreeMap(lower_than_int);
+  TreeMap *canciones_byTempo = createTreeMap(lower_than_str);//debiese ser tipo float??
   TreeMap *canciones_byArtista = createTreeMap(lower_than_str);
   List* nombre_lista;
 
-  do {
+  char ruta[1000]; //variable ruta para mas tarde;
+  char opcion; // variable opcion
+
+  do // bucle de menú
+  {
     mostrarMenuPrincipal();
     printf("Ingrese su opción: ");
-    scanf(" %c", &opcion);
-    getchar();
+    scanf("%c", &opcion); //obtengo la opcion
+    getchar(); // Limpiar el buffer después de scanf
+    
+    switch(opcion) 
+    {
+      case '1': 
+        limpiarPantalla();
+        printf("Ingrese la ubicación del archivo CSV: ");
+        fgets(ruta, sizeof(ruta), stdin); // se obtiene la ruta
+        ruta[strcspn(ruta, "\n")] = '\0'; // se le quita el \n de al final
+        cargar_canciones(ruta, canciones_id, canciones_byGenero);
+        break;
 
-    switch (opcion) {
-    case '1':
-      printf("Ingrese ruta del archivo: ");
-      scanf("%999[^\n]", ruta);  // Lee toda la línea (hasta 999 caracteres)
-      getchar();  // Elimina el '\n' residual
-      cargar_canciones(ruta, canciones_id, canciones_byGenero, canciones_byArtista, canciones_byTempo);
-      break;
-    case '2':
-      buscar_por_genero(canciones_byGenero);
-      break;
-    case '3':
-      buscar_por_artista(canciones_byArtista);
-      break;
-    case '4':
-      buscar_por_tempo(canciones_byTempo);
-      break;
-    case '5':
-      //crear_list_reproduccion(canciones_id, nombre_lista);
-      break;
-    case '6':
-      //agregar_cancion_aLista(canciones);
-      break;
-    case '7':
-      //mostrar_list_canciones(canciones);
-      break;
-    }
-    presioneTeclaParaContinuar();
-
-  } while (opcion != '8');
-
-  return 0;
-}
+        case '2':
+        limpiarPantalla();
+        buscar_por_genero(canciones_byGenero);
+        break;
+      case '3':
+        limpiarPantalla();
+        buscar_por_artista(canciones_byArtista);
+        break;
+      case '4':
+        limpiarPantalla();
+        buscar_por_tempo(canciones_byTempo);
+        break;
+      case '5':
+        //crear_list_reproduccion(canciones_id);
+        break;
+      case '6':
+        //agregar_cancion_aLista(canciones);
+        break;
+      case '7':
+        //mostrar_list_canciones(canciones);
+        break;
+      }
+      presioneTeclaParaContinuar();
+  
+    } while (opcion != '8');
+  
+    return 0;
+  }
