@@ -278,7 +278,6 @@ void buscar_por_genero(TreeMap* cancions_bygeneros) {
   //printf("canciones del genero: %s", genero);
   if (pair != NULL) {
     List* canciones = pair->value;
-    
     mostrar_cancion_paginas(canciones);
     //presioneTeclaParaContinuar();
     
