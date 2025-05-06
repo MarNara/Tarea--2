@@ -11,7 +11,8 @@ int lower_than_str(void* a, void* b)
 {
   return strcmp((char*)a, (char*)b) < 0;
 }
-void mostrarMenuPrincipal() {
+void mostrarMenuPrincipal() 
+{
   limpiarPantalla();
   puts("========================================");
   puts("     Base de Datos de Canciones");
@@ -36,7 +37,82 @@ typedef struct {
   float tempo;
 } Song;
 
-void cargarArchivo(const char *ruta, TreeMap* cancionesID) 
+typedef struct 
+{
+  List* lentas;
+  List* moderadas;
+  List* rapidas;
+
+}ListaTempoStruck;
+
+
+void mostrar_cancion_paginas(List* lista)
+{
+  if (lista == NULL)
+  {
+    printf("No hay canciones para mostrar.\n");
+    presioneTeclaParaContinuar();
+    return;
+  }
+
+  int pagina_actual = 0;
+  int canciones_por_pagina = 10;
+  int total_paginas = (list_size(lista) + canciones_por_pagina - 1) / canciones_por_pagina;
+  char opcion ;
+
+  do
+  {
+    limpiarPantalla();
+    printf("=== (Pagina %d/%d) ===\n",pagina_actual + 1, total_paginas);
+    printf("------------------------------------------------------------\n");
+    printf("ID\tTempo\tCanción\t\tÁlbum\n");
+    printf("------------------------------------------------------------\n");
+
+    int inicio = pagina_actual * canciones_por_pagina;
+    int fin = (pagina_actual + 1) * canciones_por_pagina;
+    if (fin > list_size(lista)) fin = list_size(lista);
+
+    Song* cancion = list_first(lista);
+    for (int i = 0; i < inicio && cancion != NULL; i++)
+     {
+        cancion = list_next(lista);
+    }
+
+    for (int i = inicio; i < fin && cancion != NULL; i++) 
+    {
+        printf("%.6s\t%f\t%.20s\t%.20s\n", cancion->id, cancion->tempo, cancion->track_name, cancion->album_name);
+        cancion = list_next(lista);
+    }
+
+    printf("\nOpciones:\n");
+    printf("1) Página anterior --- 2) Volver al menú --- 3) Página siguiente\n");
+    printf("Seleccione: ");
+    scanf("%c", &opcion);
+    getchar();
+
+    switch (opcion) {
+        case '1':
+            if (pagina_actual > 0) pagina_actual--;
+            break;
+
+        case '2':  
+            return ;
+
+        case '3':
+            if ((pagina_actual + 1) * canciones_por_pagina < list_size(lista)) pagina_actual++;
+            break;
+        default:
+            printf("Opción no válida.\n");
+            presioneTeclaParaContinuar();
+    }
+
+    
+  }while(opcion != '2');
+  return;
+}
+
+
+void cargarArchivo(const char *ruta, TreeMap* cancionesID, TreeMap* cancion_artista, TreeMap* cancion_genero, ListaTempoStruck* Lista_de_tempo) 
 {
     FILE *archivo = fopen(ruta, "r");
     if (archivo == NULL) 
@@ -76,6 +152,52 @@ void cargarArchivo(const char *ruta, TreeMap* cancionesID)
 
         insertTreeMap(cancionesID, cancion->id, cancion);
 
+        //Genero----------------------------------------------------------------------------------------------
+        Pair *por_genero = searchTreeMap(cancion_genero, cancion->artists);
+        List *lista_genero;
+
+        if (por_genero == NULL)
+        {
+          lista_genero = list_create();
+          insertTreeMap(cancion_genero, strdup(cancion->track_gener), lista_genero);
+        }
+        else
+        {
+          lista_genero = (List*)por_genero->value;
+        }
+        list_pushBack(lista_genero, cancion);
+
+
+        //artista---------------------------------------------------------------------------------------------
+        Pair *por_artista = searchTreeMap( cancion_artista , cancion->artists);
+        List *lista_artista;
+
+        if (por_artista == NULL)
+        {
+          lista_artista = list_create();
+          insertTreeMap(cancion_artista , strdup(cancion->artists), lista_artista);
+        }
+        else
+        {
+          lista_artista = (List*)por_artista->value;
+        }
+
+        list_pushBack(lista_artista, cancion);
+
+        //Tempo-----------------------------------------------------------------------------------------------
+        if (cancion->tempo < 80)
+        {
+          list_pushBack(Lista_de_tempo->lentas, cancion);
+        }
+        else if (cancion->tempo <= 120)
+        {
+          list_pushBack(Lista_de_tempo->moderadas, cancion);
+        }
+        else
+        {
+          list_pushBack(Lista_de_tempo->rapidas, cancion);
+        }
+        
         
     }
 
@@ -89,6 +211,21 @@ void cargarArchivo(const char *ruta, TreeMap* cancionesID)
 }
 
 // Función para imprimir los datos de una canción individual
+
+void Mostrar_cancion(Song *cancion) {
+  if (cancion == NULL) {
+      printf("Canción no encontrada.\n");
+      return;
+  }
+  
+    printf("🎵 %s - %s (Álbum: %s, Tempo: %f)\n", 
+      cancion->track_name, 
+      cancion->artists, 
+      cancion->album_name, 
+      cancion->tempo);
+}
+
+
 void imprimir_cancion(Song *cancion) {
   if (cancion == NULL) {
       printf("Canción no encontrada.\n");
@@ -126,11 +263,39 @@ void buscar_imprimir_por_id(TreeMap *canciones) {
 }
 
 
+void buscar_por_artista(TreeMap * cancion_artista)
+{
+    char artista[100];
+    printf("Ingrese nombre del artista: ");
+    scanf("%99[^\n]", artista);
+    getchar();
+
+    Pair *par = searchTreeMap(cancion_artista, artista);
+    
+    if (par != NULL) 
+    {
+      List *canciones = (List *)par->value;
+      limpiarPantalla();
+      mostrar_cancion_paginas(canciones);
+  } 
+  else 
+  {
+      printf("Artista no encontrado.\n");
+  }
+  presioneTeclaParaContinuar();
+}
+
 int main() 
 {
   SetConsoleOutputCP(65001); //esta funcion sirve para poner el formato UTF-8 sirve para mostrar los caractares españoles
 
   TreeMap *canciones_id = createTreeMap(lower_than_str); //se crea el mapa ordenado de canciones
+  TreeMap *cancion_artista = createTreeMap(lower_than_str);
+  TreeMap *canciones_byGenero = createTreeMap(lower_than_str);
+  ListaTempoStruck Lista_de_tempo;
+  Lista_de_tempo.lentas = list_create();
+  Lista_de_tempo.moderadas = list_create();
+  Lista_de_tempo.rapidas = list_create();
 
   char ruta[1000]; //variable ruta para mas tarde;
   char opcion; // variable opcion
@@ -149,7 +314,7 @@ int main()
         printf("Ingrese la ubicación del archivo CSV: ");
         fgets(ruta, sizeof(ruta), stdin); // se obtiene la ruta
         ruta[strcspn(ruta, "\n")] = '\0'; // se le quita el \n de al final
-        cargarArchivo(ruta, canciones_id); // se mete a la funcion
+        cargarArchivo(ruta, canciones_id, cancion_artista, canciones_byGenero, &Lista_de_tempo); // se mete a la funcion
         break;
 
       case '2':
@@ -159,7 +324,7 @@ int main()
       
       case '3':
         limpiarPantalla();
-        //buscar_por_artista(canciones_byArtista);
+        buscar_por_artista(cancion_artista);
         break;
 
       case '8':
