@@ -156,7 +156,7 @@ void cargarArchivo(const char *ruta, TreeMap* cancionesID, TreeMap* cancion_arti
         insertTreeMap(cancionesID, cancion->id, cancion);
 
         //Genero----------------------------------------------------------------------------------------------
-        Pair *por_genero = searchTreeMap(cancion_genero, cancion->artists);
+        Pair *por_genero = searchTreeMap(cancion_genero, cancion->track_gener);
         List *lista_genero;
 
         if (por_genero == NULL)
@@ -277,7 +277,9 @@ void buscar_por_genero(TreeMap* cancions_bygeneros) {
   Pair *pair = searchTreeMap(cancions_bygeneros, genero);
   //printf("canciones del genero: %s", genero);
   if (pair != NULL) {
-    List* canciones = pair->value;
+    List* canciones = (List*)pair->value;
+    //Song* cancion = list_first(canciones);
+    limpiarPantalla();
     mostrar_cancion_paginas(canciones);
     //presioneTeclaParaContinuar();
     
@@ -311,6 +313,118 @@ void buscar_por_artista(TreeMap * cancion_artista)
   presioneTeclaParaContinuar();
 }
 
+
+//buscar tempo, necesito un switch, ARREGLAR
+void buscar_por_tempo(List* lista_lentas, List* lista_moderadas, List* lista_rapidas){
+  int opcion;
+  //pedir al usuario que ingrese un tempo
+  printf("Ingrese la “velocidad” deseada de las canciones: \n");
+  printf("1) Lentas: menor 80 BPM \n");
+  printf("2) Moderadas: mayor o igual a 80, menor o igual a 120 \n");
+  printf("3) Rapidas: mayor a 120\n");
+  //VEERIFICAR EL SACNF Y EL TIPO DE DATO
+  scanf("%d", &opcion); // Lee el ID del teclado
+  char* clave;
+  switch(opcion){
+    case 1 : 
+      clave = "Lentas";
+      break;
+    case 2 :
+      clave = "Moderadas";
+      break;
+    case 3 :
+      clave = "Rapidas";
+      break;
+    default :
+      printf("Opción Invalida");
+      return;
+  }
+  //Pair* pair1 = searchTreeMap(lista_lentas, clave);
+  //Pair* pair2 = searchTreeMap(lista_moderadas, clave);
+  //Pair* pair3 = searchTreeMap(lista_moderadas, clave);
+  
+  
+  if ( opcion == 1 ) {
+    mostrar_cancion_paginas(lista_lentas);
+  }
+  else if( opcion == 2){
+    mostrar_cancion_paginas(lista_moderadas);
+  }
+  else if( opcion == 3){
+    mostrar_cancion_paginas(lista_rapidas);
+
+  }
+  else{
+    printf("Tempo inválido...");
+  }
+  presioneTeclaParaContinuar();
+}
+
+/*crear lista de reproduccion: para eso debo ir haciendo diversas preguntas como por ejemplo, ingresar nombre, 
+e ingresar el nombre de la cancion*/
+void crear_lista_reproduccion(TreeMap* mapa_listas_reproduccion){
+  //preguntar al usuario que nombre desea colocar a la lista
+  printf("Ingrese el nombre para la nueva lista:\n");
+  char nombre_lista[100];
+  scanf("%99[^\n]", nombre_lista);
+  getchar();
+  
+  //verificar si la lista ya existe
+  if (searchTreeMap(mapa_listas_reproduccion, nombre_lista) != NULL){
+    printf("ya existe una lista con el nombre %s",nombre_lista);
+  }
+
+  
+  List* lista_new = list_create();//crear la nueva lista de reproduccion
+  if(lista_new == NULL){
+    printf("Error al crear la nueva lista\n");
+    return;
+  }
+  
+  //ver si el duplicado mesta bien creado o si hay algun fallo
+  char* nombre_lista_duplicado = strdup(nombre_lista);
+  if(nombre_lista_duplicado == NULL){
+    printf("Error al USAR nombre_lista_duplicado\n");
+    return;
+  }
+  insertTreeMap(mapa_listas_reproduccion, nombre_lista_duplicado, lista_new); //insertTreeMap(TreeMap * tree, void* key, void * value);
+  printf("Su lista %s a sido creada con exito\n", nombre_lista);  
+  /*si libero el mapa de la funcion, cuando lo quiera utilizar de nuevo el programa podria fallar, asi que tendre
+  que eliminarlo*/
+  presioneTeclaParaContinuar();
+}
+
+
+//mostrar listas de reproduccion para tener claridad si tenemos las funciones bien creadas
+void mostrar_listas_reproduccion(TreeMap* mapa_listas_reproduccion){
+  if(mapa_listas_reproduccion == NULL){
+    printf("No tiene listas de reproducción creadas");
+  }
+  else{
+    Pair* pair = firstTreeMap(mapa_listas_reproduccion);/*no puedo usar el search ya que solo muestro y no le pido al 
+    usuario el nombre de la lista*/
+    printf("================ Mis Listas De Reproducción ================");
+    while(pair != NULL){
+      char* nombre_lista = pair->key;
+      printf(">  %s\n", nombre_lista);
+      pair = nextTreeMap(mapa_listas_reproduccion);
+    }
+  }
+  printf("\n");
+  presioneTeclaParaContinuar();
+
+}
+
+/*en agregar cancion debo verificar si la cancion esta en la lista o no, tambien debo usar la funcion insert para insertar 
+una cancion a una lista de reproduccion, primero debo mostrar las listas que tengo, luego debo preguntar al usuario el nombre
+de  la cancion que desea agregar a la lista*/
+void agregar_cancion_Alista(TreeMap* mapa_listas_reproduccion){
+  mostrar_listas_reproduccion(mapa_listas_reproduccion);
+
+}
+
+
+
 int main() 
 {
   SetConsoleOutputCP(65001); //esta funcion sirve para poner el formato UTF-8 sirve para mostrar los caractares españoles
@@ -322,6 +436,7 @@ int main()
   Lista_de_tempo.lentas = list_create();
   Lista_de_tempo.moderadas = list_create();
   Lista_de_tempo.rapidas = list_create();
+  TreeMap* listas_reproduccion = createTreeMap(lower_than_str);//recordar que es un mapa, solo el nombre es para la ocasion :(
 
   char ruta[1000]; //variable ruta para mas tarde;
   char opcion; // variable opcion
@@ -341,6 +456,7 @@ int main()
         fgets(ruta, sizeof(ruta), stdin); // se obtiene la ruta
         ruta[strcspn(ruta, "\n")] = '\0'; // se le quita el \n de al final
         cargarArchivo(ruta, canciones_id, cancion_artista, canciones_byGenero, &Lista_de_tempo); // se mete a la funcion
+        
         break;
 
       case '2':
@@ -351,6 +467,27 @@ int main()
       case '3':
         limpiarPantalla();
         buscar_por_artista(cancion_artista);
+        break;
+
+      case '4':
+        limpiarPantalla();
+        
+        buscar_por_tempo(Lista_de_tempo.lentas, Lista_de_tempo.moderadas, Lista_de_tempo.rapidas);
+        break;
+
+      case '5':
+        limpiarPantalla();
+        crear_lista_reproduccion(listas_reproduccion);
+        break;
+
+      case '6':
+        limpiarPantalla();
+        agregar_cancion_Alista(listas_reproduccion);
+        break;
+
+      case '7':
+        limpiarPantalla();
+        mostrar_listas_reproduccion(listas_reproduccion);
         break;
 
       case '8':
