@@ -66,7 +66,7 @@ void mostrar_cancion_paginas(List* lista)
     limpiarPantalla();
     printf("=== (Pagina %d/%d) ===\n",pagina_actual + 1, total_paginas);
     printf("------------------------------------------------------------\n");
-    printf("ID\tTempo\tCanción\t\tÁlbum\n");
+    printf("ID\tTempo\tCanción\t\tÁlbum\n");//volveeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeer
     printf("------------------------------------------------------------\n");
 
     int inicio = pagina_actual * canciones_por_pagina;
@@ -396,6 +396,7 @@ void crear_lista_reproduccion(TreeMap* mapa_listas_reproduccion){
 
 
 //mostrar listas de reproduccion para tener claridad si tenemos las funciones bien creadas
+//listo
 void mostrar_listas_reproduccion(TreeMap* mapa_listas_reproduccion){
   if(mapa_listas_reproduccion == NULL){
     printf("No tiene listas de reproducción creadas");
@@ -403,9 +404,9 @@ void mostrar_listas_reproduccion(TreeMap* mapa_listas_reproduccion){
   else{
     Pair* pair = firstTreeMap(mapa_listas_reproduccion);/*no puedo usar el search ya que solo muestro y no le pido al 
     usuario el nombre de la lista*/
-    printf("================ Mis Listas De Reproducción ================");
+    printf("================ Mis Listas De Reproducción ================\n");
     while(pair != NULL){
-      char* nombre_lista = pair->key;
+      char* nombre_lista = pair->key;//recordar los punteros
       printf(">  %s\n", nombre_lista);
       pair = nextTreeMap(mapa_listas_reproduccion);
     }
@@ -418,12 +419,55 @@ void mostrar_listas_reproduccion(TreeMap* mapa_listas_reproduccion){
 /*en agregar cancion debo verificar si la cancion esta en la lista o no, tambien debo usar la funcion insert para insertar 
 una cancion a una lista de reproduccion, primero debo mostrar las listas que tengo, luego debo preguntar al usuario el nombre
 de  la cancion que desea agregar a la lista*/
-void agregar_cancion_Alista(TreeMap* mapa_listas_reproduccion){
+void agregar_cancion_Alista(TreeMap* mapa_listas_reproduccion, TreeMap* mapa_id){
   mostrar_listas_reproduccion(mapa_listas_reproduccion);
+  printf("================ Para Agregar Canciones ================\n");
+  printf("-Ingrese el nombre de la lista a la\nque desea agregar una canción: ");
+  char nombre_lista[100];
+  scanf("%99[^\n]", nombre_lista);
+  getchar();
+  //buscar el nombre de la lista
+  Pair* pair_listas = searchTreeMap(mapa_listas_reproduccion, nombre_lista);
+  if(pair_listas == NULL){
+    printf("La lista que busca no existe\n");
+  }
+  
+  printf("\n\n-Ingrese el ID de la canción que \ndesea agregar: ");
+  char id_cancion[100];
+  scanf("%99[^\n]", id_cancion);
+  getchar();
+  //buscar el id
+  Pair* pair_id = searchTreeMap(mapa_id, id_cancion);
+  if(pair_id == NULL){
+    printf("El ID que busca no existe\n");
+  }
 
+  //obtener la lista y la cancion que el usuario quiere agregar pero con el id porque el nombre de la cancion es muy larga
+  List* canciones = pair_listas->value;//recordar que es una lista y no un mapa :(
+  Song* cancion = pair_id->value;//aqui esta el id especifico
+
+  list_pushBack(canciones, cancion);//list_pushFront(List *L, void *dato);
+  printf("La cancion '%s' se a agregado con exito a '%s'.\n", cancion->track_name, nombre_lista);//->track_name
+
+  //insertTreeMap
+  presioneTeclaParaContinuar();
+  
 }
 
+//mostraaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaar
+void mostra_canciones_DeLista(TreeMap* mapa_listas_reproduccion){
+  char nombre_lista[100];
+  printf("Ingrese el nombre de la lista de canciones que desea ver:");
+  scanf("%99[^\n]", nombre_lista);
+  getchar();
 
+  Pair* pair = searchTreeMap(mapa_listas_reproduccion, nombre_lista);
+  while(pair != NULL){
+    List* canciones = pair->value;
+    mostrar_cancion_paginas(canciones);
+  }
+  presioneTeclaParaContinuar();
+}
 
 int main() 
 {
@@ -482,12 +526,12 @@ int main()
 
       case '6':
         limpiarPantalla();
-        agregar_cancion_Alista(listas_reproduccion);
+        agregar_cancion_Alista(listas_reproduccion, canciones_id);
         break;
 
       case '7':
         limpiarPantalla();
-        mostrar_listas_reproduccion(listas_reproduccion);
+        mostra_canciones_DeLista(listas_reproduccion);
         break;
 
       case '8':
