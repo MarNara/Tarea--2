@@ -9,11 +9,12 @@ ejecutar con:
 Archivo para cargar canciones:
 # song_dataset_.csv
 
-Sistema de gestión de tickets de soporte técnico:
+Aplicación de música:
 Descripción: En este sistema de gestión de tickets de soporte tecnico se pueden registrar tickets, asignar prioridad, mostrar los tickets, atender al siguiente ticket y buscar tickets por Id, ya que esto permite tener una mayor organizacion para los distintos casos.
 
 cómo compilar y ejecutar la tarea:
--Ingresar al visual studio code. -Clonar en repositorio GitHub el link enviado al aula virtual:
+-Ingresar al visual studio code. 
+-Clonar en repositorio GitHub el link enviado al aula virtual:
 
 -----------Para compilar y ejecutar el codigo--------------
 
@@ -21,9 +22,11 @@ Abre el archivo principal (por ejemplo, tarea1.c).
 
 Abre la terminal con ctrl + ñ.
 
-En la terminal bash, compila el programa con el siguiente comando : gcc tdas/*.c tarea1.c -Wno-unused-result -o tarea1
+En la terminal bash, compila el programa con el siguiente comando : 
+# gcc tdas/*.c tarea2.c -Wno-unused-result -o tarea2
 
-Luego debe escribir lo siguiente para ejecutar la tarea: ./tarea1
+Luego debe escribir lo siguiente para ejecutar la tarea: 
+# ./tarea2
 
 las opciones que funcionan correctamente y las que no lo hacen indicando posibles causas; Las opiones que funcionan son las siguientes: (1) Registrar ticket. (2) Asignar prioridad a ticket. (3) Mostrar lista de tickets pendientes. (4) Procesar siguiente ticket. (5) Buscar ticket por ID y mostrar detalles. (6) Salir.
 ------OBSERVACIÓN----- Al pasar a otra opcion debo presionar una tecla cualquiera pero no me deja usar enter, sin embargo, en otros casos me deja presionar enter sin problemas.
