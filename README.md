@@ -15,13 +15,13 @@ Abre el archivo principal (por ejemplo, tarea2.c).
 Abre la terminal con ctrl + ñ.
 
 En la terminal bash, compila el programa con el siguiente comando : 
-# gcc tdas/*.c tarea2.c -Wno-unused-result -o tarea2
+### gcc tdas/*.c tarea2.c -Wno-unused-result -o tarea2
 
 Luego debe escribir lo siguiente para ejecutar la tarea: 
-# ./tarea2
+### ./tarea2
 
 Archivo para cargar canciones:
-# song_dataset_.csv
+### song_dataset_.csv
 
 -------------------------------------------------------------------------------------------------------------------------------
 
