@@ -37,9 +37,34 @@ Al pasar a otra opcion debo presionar cualquier tecla. También cuando queremos 
 ## Ejemplos mostrando como interactuar con la aplicación.
 
 ----------------------- **EJEMPLO (1) Cargar Canciones** ---------------------------
- Ingrese su opci├│n: 1 Registrar nuevo ticket Ingrese el ID: 45 Ingrese la descripci├│n: El Pc se apago y ya no enciende El ticket se a registrado con exito. Presione una tecla para continuar...
+ Ingrese su opción: 1 
+ Ingrese la ubicación del archivo CSV: song_dataset_.csv
+Archivo cargado perfectamente
+Presione una tecla para continuar...
 
------------------------ **EJEMPLO (2) Buscar por Género** --------------------------- Ingrese su opci├│n: 2 Ingrese el ID al cual quiere asignar una nueva prioridad: 45 Asigne la prioridad: Alta es 1 Media es 2 Baja es 3. 1 su prioridad a sido asignada como Alta Presione una tecla para continuar...
+----------------------- **EJEMPLO (2) Buscar por Género** --------------------------- 
+Ingrese su opción: 2
+Ingrese el género de la canción: pop
+=== (Pagina 1/200) ===
+╔═══════╦═══════════╦══════════════════════╦══════════════════════╦════════════════════════════════╦════════════════╗
+║ ID    ║ Tempo ║ Canción               ║ Álbum                 ║ Artista                        ║ Género    ║
+╠═══════╬═══════════╬══════════════════════╬══════════════════════╬════════════════════════════════╬════════════════╣
+║ 81000 ║ 171.01 ║ Blinding Lights        ║ After Hours            ║ The Weeknd                     ║ pop        ║
+║ 81001 ║ 191.83 ║ Mann Mera              ║ Table No. 21 (Original ║ Gajendra Verma                 ║ pop        ║
+║ 81002 ║ 114.98 ║ Summer High            ║ Summer High            ║ AP Dhillon                     ║ pop        ║
+║ 81003 ║ 116.99 ║ Under The Influence    ║ Indigo (Extended)      ║ Chris Brown                    ║ pop        ║
+║ 81004 ║ 186.00 ║ Starboy                ║ Starboy                ║ The Weeknd;Daft Punk           ║ pop        ║
+║ 81005 ║ 98.97  ║ Insane                 ║ Insane                 ║ AP Dhillon;Shinda Kahlon;Gurin ║ pop        ║
+║ 81006 ║ 100.02 ║ Akhiyaan               ║ Akhiyaan               ║ Mitraz                         ║ pop        ║
+║ 81007 ║ 98.06  ║ Daku                   ║ Daku                   ║ Chani Nattan;Inderpal Moga     ║ pop        ║
+║ 81008 ║ 79.97  ║ Jhoom - R&B Mix        ║ Jhoom                  ║ Ali Zafar                      ║ pop        ║
+║ 81009 ║ 90.07  ║ Na Ja                  ║ Na Ja                  ║ Pav Dharia                     ║ pop        ║
+╚═══════╩════════╩═════════════════════════╩══════════════════════╩════════════════════════════════╩════════════════╝
+
+Opciones:
+1) Página anterior --- 2) Volver al menú --- 3) Página siguiente
+Seleccione: 2
+Presione una tecla para continuar...
 
 ----------------------- **EJEMPLO (3) Buscar por Artista** --------------------------- Ingrese su opci├│n: 3 Mostrar ticket por prioridad y orden de llegada:
 
