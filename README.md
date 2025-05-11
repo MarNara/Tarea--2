@@ -1,16 +1,5 @@
-Descripción
-
-Compilar con: 
-# gcc tdas/*.c tarea2.c -Wno-unused-result -o tarea2
-
-ejecutar con:
-# ./tarea2
-
-Archivo para cargar canciones:
-# song_dataset_.csv
-
 Aplicación de música:
-Descripción: En este sistema de gestión de tickets de soporte tecnico se pueden registrar tickets, asignar prioridad, mostrar los tickets, atender al siguiente ticket y buscar tickets por Id, ya que esto permite tener una mayor organizacion para los distintos casos.
+Descripción: En este programa se crea Spotifind, una herramienta de consola que permite cargar una base de datos de canciones y, carga canciones desde un archivo csv, busca canciones por género, busca canciones por artista y busca canciones según su velocidad o tempo. También puede crear listas de reproduccion, puede agregar canciones a las listas ya creadas y por ultimo puede mostrar las canciones de una lista en especifico. Además, la aplicación permitirá organizar tus canciones favoritas en listas de reproducción personalizadas.
 
 cómo compilar y ejecutar la tarea:
 -Ingresar al visual studio code. 
@@ -18,7 +7,7 @@ cómo compilar y ejecutar la tarea:
 
 -----------Para compilar y ejecutar el codigo--------------
 
-Abre el archivo principal (por ejemplo, tarea1.c).
+Abre el archivo principal (por ejemplo, tarea2.c).
 
 Abre la terminal con ctrl + ñ.
 
@@ -28,11 +17,19 @@ En la terminal bash, compila el programa con el siguiente comando :
 Luego debe escribir lo siguiente para ejecutar la tarea: 
 # ./tarea2
 
-las opciones que funcionan correctamente y las que no lo hacen indicando posibles causas; Las opiones que funcionan son las siguientes: (1) Registrar ticket. (2) Asignar prioridad a ticket. (3) Mostrar lista de tickets pendientes. (4) Procesar siguiente ticket. (5) Buscar ticket por ID y mostrar detalles. (6) Salir.
-------OBSERVACIÓN----- Al pasar a otra opcion debo presionar una tecla cualquiera pero no me deja usar enter, sin embargo, en otros casos me deja presionar enter sin problemas.
+Archivo para cargar canciones:
+# song_dataset_.csv
+
+
+las opciones que funcionan correctamente y las que no lo hacen indicando posibles causas; Las opiones que funcionan son las siguientes: 
+(1) Cargar Canciones. (2) Buscar por Género. (3) Buscar por Artista. (4) Buscar por Tempo. (5) Crear Lista de Reproducción. (6) Agregar Canción a Lista. (7) Mostrar Canciones de una Lista . (8) Salir.
+
+------OBSERVACIÓN----- 
+Al pasar a otra opcion debo presionar cualquier tecla para
 
 un ejemplo mostrando como interactuar con la aplicación.
------------------------EJEMPLO opción 1--------------------------- Ingrese su opci├│n: 1 Registrar nuevo ticket Ingrese el ID: 45 Ingrese la descripci├│n: El Pc se apago y ya no enciende El ticket se a registrado con exito. Presione una tecla para continuar...
+-----------------------EJEMPLO opción 1---------------------------
+ Ingrese su opci├│n: 1 Registrar nuevo ticket Ingrese el ID: 45 Ingrese la descripci├│n: El Pc se apago y ya no enciende El ticket se a registrado con exito. Presione una tecla para continuar...
 
 -----------------------EJEMPLO opción 2--------------------------- Ingrese su opci├│n: 2 Ingrese el ID al cual quiere asignar una nueva prioridad: 45 Asigne la prioridad: Alta es 1 Media es 2 Baja es 3. 1 su prioridad a sido asignada como Alta Presione una tecla para continuar...
 
@@ -63,3 +60,4 @@ Presione una tecla para continuar...
 
 Cuando NO hay ID:
 Ingrese su opci├│n: 5 Ingrese el ID que desea buscar: 56 El ID que a ingresado no existe Presione una tecla para continuar...
+
