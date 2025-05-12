@@ -1,7 +1,6 @@
 ## Aplicación de música
 
-Descripción: En este programa se crea Spotifind, una herramienta de consola que permite cargar una base de datos de canciones y, carga canciones desde un archivo csv, busca canciones por género, busca canciones por artista y busca canciones según su velocidad o tempo. También puede crear listas de reproduccion, puede agregar canciones a las listas ya creadas y por ultimo puede mostrar las canciones de una lista en especifico. Además, la aplicación permitirá organizar tus canciones favoritas en listas de reproducción personalizadas.
-
+Descripción: En este programa se crea Spotifind, una herramienta de consola que permite cargar una base de datos de canciones y, carga canciones desde un archivo csv, busca canciones por género, busca canciones por artista y busca canciones según su velocidad o tempo. También puede crear listas de reproduccion, puede agregar canciones a las listas ya creadas y por ultimo puede mostrar las canciones de una lista en especifico. 
 -------------------------------------------------------------------------------------------------------------------------------
 
 ## Cómo compilar y ejecutar la tarea:
@@ -66,23 +65,9 @@ Opciones:
 Seleccione: 2
 Presione una tecla para continuar...
 
------------------------ **EJEMPLO (3) Buscar por Artista** --------------------------- Ingrese su opci├│n: 3 Mostrar ticket por prioridad y orden de llegada:
+----------------------- **EJEMPLO (3) Buscar por Artista** --------------------------- 
 
-ID: 45. Descripci├│n: El Pc se apago y ya no enciende. Prioridad: Alta. Hora de Registro: 14:15:05
-
-ID: 67. Descripci├│n: El celular no carga muy bien aunque aveces si lo hace bien. Prioridad: Media. Hora de Registro: 14:16:34
-
-ID: 80. Descripci├│n: Se reinicia la laptop cuando abro algunos programas. Prioridad: Media. Hora de Registro: 14:17:53
-
-ID: 23. Descripci├│n: instalar un antivirus. Prioridad: Baja. Hora de Registro: 14:14:41
-
-ID: 73. Descripci├│n: actualizar aplicaciones. Prioridad: Baja. Hora de Registro: 14:17:10
-
-Presione una tecla para continuar...
-
------------------------ **EJEMPLO (4) Buscar por Tempo** --------------------------- Ingrese su opci├│n: 4 Ticket de prioridad Alta siendo atendido ID: 45. Descripci├│n: El Pc se apago y ya no enciende. Prioridad: Alta. Hora de Registro: 14:15:05
-
-Presione una tecla para continuar...
+----------------------- **EJEMPLO (4) Buscar por Tempo** --------------------------- 
 
 ----------------------- **Ejemplo (5) Crear Lista de Reproducción** ---------------------------
 
@@ -115,7 +100,8 @@ Ingrese su opci├│n: 5 Ingrese el ID que desea buscar: 56 El ID que a ingresa
 
 - Desarrolló las siguientes funciones:
     - buscar_por_genero, buscar_por_tempo, crear_lista_reproduccion, mostrar_listas_reproduccion, agregar_cancion_Alista, mostra_canciones_DeLista.
-
 - Documentación y comentarios en el código.
 - Diseño y redacción del README.
 - **Auto-evaluación**: 3 (Aporte excelente).
+
+Si bien cada uno se encargaba de una función en especifico de igual forma se recibia ayuda mutuamente.

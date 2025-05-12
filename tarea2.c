@@ -11,6 +11,7 @@ int lower_than_str(void* a, void* b)
 {
   return strcmp((char*)a, (char*)b) < 0;
 }
+//Muestra el menú principal, es decir donde aparecen las opciones.
 void mostrarMenuPrincipal() 
 {
   limpiarPantalla();
@@ -28,6 +29,7 @@ void mostrarMenuPrincipal()
   puts("8) Salir");
 }
 
+//etructura de la información de cada canción
 typedef struct {
   char id[100];
   char artists[100];
@@ -37,12 +39,12 @@ typedef struct {
   float tempo;
 } Song;
 
+//estructura de cada tipo de tempo, lento, 
 typedef struct 
 {
   List* lentas;
   List* moderadas;
   List* rapidas;
-
 }ListaTempoStruck;
 
 
@@ -66,7 +68,7 @@ void mostrar_cancion_paginas(List* lista)
     limpiarPantalla();
     printf("=== (Pagina %d/%d) ===\n",pagina_actual + 1, total_paginas);
     printf("╔═══════╦═══════════╦══════════════════════╦══════════════════════╦════════════════════════════════╦════════════════╗\n");
-    printf("║ %-4s  ║ %-6s║ %-22s ║ %-22s ║ %-30s ║ %-10s ║\n", "ID", "Tempo", "Canción", "Álbum", "Artista", "Género");
+    printf("║ %-4s ║ %-6s║ %-22s ║ %-22s ║ %-30s ║ %-10s ║\n", "ID", "Tempo", "Canción", "Álbum", "Artista", "Género");
     printf("╠═══════╬═══════════╬══════════════════════╬══════════════════════╬════════════════════════════════╬════════════════╣\n");
 
     int inicio = pagina_actual * canciones_por_pagina;
@@ -268,16 +270,12 @@ void buscar_imprimir_por_id(TreeMap *canciones) {
 }
 
 
-//Arreglar
+//buscar un género y mostrar la informacion de cada cancion de aquel género
 void buscar_por_genero(TreeMap* cancions_bygeneros) {
   char genero[100];
-  //fgets(buffer, sizeof(buffer), stdin);
-  //opcion = buffer[0];
-
   // Solicita al usuario el ID de la canción
   printf("Ingrese el género de la canción: ");
-  //scanf(" %[^\n]", genero); // Lee el genero del teclado
-  fgets(genero, sizeof(genero), stdin);
+  fgets(genero, sizeof(genero), stdin);// Lee el genero del teclado
   
   //agregar un \n
   size_t len = strlen(genero);
@@ -287,10 +285,8 @@ void buscar_por_genero(TreeMap* cancions_bygeneros) {
   }
 
   Pair *pair = searchTreeMap(cancions_bygeneros, genero);
-  //printf("canciones del genero: %s", genero);
   if (pair != NULL) {
     List* canciones = (List*)pair->value;
-    //Song* cancion = list_first(canciones);
     limpiarPantalla();
     mostrar_cancion_paginas(canciones);
   }
@@ -301,17 +297,17 @@ void buscar_por_genero(TreeMap* cancions_bygeneros) {
   presioneTeclaParaContinuar();
 }
 
-//buscar por artista
+//buscar un artista y mostrar la informacion de cada cancion de aquel artista
 void buscar_por_artista(TreeMap * cancion_artista)
 {
-    char artista[100];
+    char artista[100]; //variable del que guardara el artista a buscar
     printf("Ingrese nombre del artista: ");
-    scanf("%99[^\n]", artista);
+    scanf("%99[^\n]", artista); //se lee el artista y se guarda en la variable artista
     getchar();
 
-    Pair *par = searchTreeMap(cancion_artista, artista);
+    Pair *par = searchTreeMap(cancion_artista, artista); //se busca el par, para del artista
     
-    if (par != NULL) 
+    if (par != NULL) //si se encuentra 
     {
       List *canciones = (List *)par->value;
       limpiarPantalla();
@@ -327,16 +323,14 @@ void buscar_por_artista(TreeMap * cancion_artista)
 
 //buscar tempo, necesito un switch, ARREGLAR
 void buscar_por_tempo(List* lista_lentas, List* lista_moderadas, List* lista_rapidas){
-  //char opcion;
   char opcion[10];  //pedir al usuario que ingrese un tempo
   printf("Ingrese la “velocidad” deseada de las canciones: \n");
   printf("1) Lentas: menor 80 BPM \n");
   printf("2) Moderadas: mayor o igual a 80, menor o igual a 120 \n");
   printf("3) Rapidas: mayor a 120\n");
   printf("\nIngrese la velocidad : " );
-  //VEERaux EL SACNFauxTIPO DE DATO
   fgets(opcion, sizeof(opcion), stdin); // Lee la opción de las velocidades
-  //opcion = aux[0]; 
+   
   
   //reemplazar "\n" por cero.
   opcion[strcspn (opcion,"\n")] = 0;
@@ -351,7 +345,7 @@ void buscar_por_tempo(List* lista_lentas, List* lista_moderadas, List* lista_rap
     mostrar_cancion_paginas(lista_rapidas);
   }
   else{
-    printf("Tempo inválido...");
+    printf("Tempo inválido...\n");
   }
   presioneTeclaParaContinuar();
 }
@@ -367,9 +361,10 @@ void crear_lista_reproduccion(TreeMap* mapa_listas_reproduccion){
   
   //verificar si la lista ya existe
   if (searchTreeMap(mapa_listas_reproduccion, nombre_lista) != NULL){
-    printf("ya existe una lista con el nombre %s",nombre_lista);
+    printf("ya existe una lista con el nombre %s\n",nombre_lista);
+    presioneTeclaParaContinuar();
+    return;
   }
-
   
   List* lista_new = list_create();//crear la nueva lista de reproduccion
   if(lista_new == NULL){
@@ -414,6 +409,7 @@ void mostrar_listas_reproduccion(TreeMap* mapa_listas_reproduccion){
 una cancion a una lista de reproduccion, primero debo mostrar las listas que tengo, luego debo preguntar al usuario el nombre
 de  la cancion que desea agregar a la lista*/
 void agregar_cancion_Alista(TreeMap* mapa_listas_reproduccion, TreeMap* mapa_id){
+
   mostrar_listas_reproduccion(mapa_listas_reproduccion);
   printf("================ Para Agregar Canciones ================\n");
   printf("-Ingrese el nombre de la lista a la\nque desea agregar una canción: ");
@@ -424,6 +420,8 @@ void agregar_cancion_Alista(TreeMap* mapa_listas_reproduccion, TreeMap* mapa_id)
   Pair* pair_listas = searchTreeMap(mapa_listas_reproduccion, nombre_lista);
   if(pair_listas == NULL){
     printf("La lista que busca no existe\n");
+    presioneTeclaParaContinuar();
+    return;
   }
   
   printf("\n\n-Ingrese el ID de la canción que \ndesea agregar: ");
@@ -431,20 +429,19 @@ void agregar_cancion_Alista(TreeMap* mapa_listas_reproduccion, TreeMap* mapa_id)
   scanf("%99[^\n]", id_cancion);
   getchar();
 
-  
   //buscar el id
   Pair* pair_id = searchTreeMap(mapa_id, id_cancion);
   if(pair_id == NULL){
     printf("El ID que a ingresado no existe\n");
+    presioneTeclaParaContinuar();
+    return;
+    
   }
-
-  //ya existe la cancion en la lista
-  
 
   //obtener la lista y la cancion que el usuario quiere agregar pero con el id porque el nombre de la cancion es muy larga
   List* canciones = pair_listas->value;//recordar que es una lista y no un mapa :(
   Song* cancion = pair_id->value;//aqui esta el id especifico
-
+  //ya existe la cancion en la lista
   Song* actual_id = (Song*)list_first(canciones);
   int cancion_existe;
   while(actual_id != NULL){
@@ -454,7 +451,6 @@ void agregar_cancion_Alista(TreeMap* mapa_listas_reproduccion, TreeMap* mapa_id)
     }
     actual_id = (Song*)list_next(canciones);
   }
-
     if(cancion_existe){
       printf("El ID que a ingresado ya existe en la lista\n");
     }
@@ -470,7 +466,15 @@ void agregar_cancion_Alista(TreeMap* mapa_listas_reproduccion, TreeMap* mapa_id)
 
 //mostrar
 void mostra_canciones_DeLista(TreeMap* mapa_listas_reproduccion){
+  if(mapa_listas_reproduccion == NULL) 
+  {
+    printf("No hay listas encontradas\n");
+    presioneTeclaParaContinuar();
+    return;
+  }
+
   mostrar_listas_reproduccion(mapa_listas_reproduccion);
+  
   printf("================ Para Mostrar Canciones ================\n");
   char nombre_lista[100];
   printf("Ingrese el nombre de la lista de canciones que desea ver:");
@@ -478,12 +482,22 @@ void mostra_canciones_DeLista(TreeMap* mapa_listas_reproduccion){
   getchar();
 
   Pair* pair = searchTreeMap(mapa_listas_reproduccion, nombre_lista);
-  while(pair != NULL){
+  if(pair != NULL){
     List* canciones = pair->value;
-    mostrar_cancion_paginas(canciones);
+    if(canciones == NULL || list_size(canciones) == 0){
+      printf("La lista que a ingresado se encuentra vacía\n");
+    }
+    else{
+      mostrar_cancion_paginas(canciones);
+    } 
+  }
+  else{
+    printf("\nNo se a encontrado una lista\n");
   }
   presioneTeclaParaContinuar();
+
 }
+
 
 int main() 
 {
@@ -511,7 +525,7 @@ int main()
     switch(opcion) 
     {
       case '1': 
-        limpiarPantalla();
+         limpiarPantalla();
         printf("Ingrese la ubicación del archivo CSV: ");
         fgets(ruta, sizeof(ruta), stdin); // se obtiene la ruta
         ruta[strcspn(ruta, "\n")] = '\0'; // se le quita el \n de al final
@@ -525,7 +539,7 @@ int main()
         break;
       
       case '3':
-        limpiarPantalla();
+ //se realiza el buscarliza hacia la funicion buscar_por_artista        limpiarPantalla();
         buscar_por_artista(cancion_artista);
         break;
 
@@ -549,14 +563,14 @@ int main()
         limpiarPantalla();
         mostra_canciones_DeLista(listas_reproduccion);
         break;
-
+// con el 8 se sale
       case '8':
-        printf("Saliendo del programa...\n");
+        printf//caso en que le usuario no ingrese la opcion incorrecta("Saliendo del programa...\n");
         break;
       default:
         printf("Opción no válida. Intente nuevamente.\n");
         presioneTeclaParaContinuar();
-      }
+// con el 8s  se sale      }
   } while (opcion != '8');
   
   return 0;
