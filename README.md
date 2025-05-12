@@ -8,7 +8,7 @@ Descripción: En este programa se crea Spotifind, una herramienta de consola que
 -Ingresar al visual studio code. 
 -Clonar en repositorio GitHub el link enviado al aula virtual:
 
------------Para compilar y ejecutar el codigo--------------
+**-----------Para compilar y ejecutar el codigo--------------**
 
 Abre el archivo principal (por ejemplo, tarea2.c).
 
