@@ -19,13 +19,14 @@ En la terminal bash, compila el programa con el siguiente comando :
 ```bash
 gcc tdas/*.c tarea2.c -Wno-unused-result -o tarea2
 ```
-
 Luego debe escribir lo siguiente para ejecutar la tarea: 
-### ./tarea2
-
+```bash
+ ./tarea2
+```
 Archivo para cargar canciones:
-### song_dataset_.csv
-
+```bash
+song_dataset_.csv
+```
 -------------------------------------------------------------------------------------------------------------------------------
 
 las opciones que funcionan correctamente y las que no lo hacen indicando posibles causas;
