@@ -1,6 +1,7 @@
 ## Aplicación de música:
 
 Descripción: En este programa se crea Spotifind, una herramienta de consola que permite cargar una base de datos de canciones y, carga canciones desde un archivo csv, busca canciones por género, busca canciones por artista y busca canciones según su velocidad o tempo. También puede crear listas de reproduccion, puede agregar canciones a las listas ya creadas y por ultimo puede mostrar las canciones de una lista en especifico. 
+
 -------------------------------------------------------------------------------------------------------------------------------
 
 ## Cómo compilar y ejecutar la tarea:
@@ -28,25 +29,30 @@ las opciones que funcionan correctamente y las que no lo hacen indicando posible
 Las opiones que funcionan son las siguientes: 
 (1) Cargar Canciones. (2) Buscar por Género. (3) Buscar por Artista. (4) Buscar por Tempo. (5) Crear Lista de Reproducción. (6) Agregar Canción a Lista. (7) Mostrar Canciones de una Lista . (8) Salir.
 
-------OBSERVACIÓN------ 
+**------OBSERVACIÓN------** 
+
 - Al pasar a otra opcion debo presionar cualquier tecla. 
 - Sería bueno implementar una función para controlar casos donde el nombre del artista o el nombre de los géneros 
 tenga letras minusculas o mayusculas pero sean la misma palabra, como por ejemplo: pop = Pop.
 - Tambien estaria bien agregar un buscar por pagina que me mueva directamente a la pagina.
 
-------Nota------
--La biblioteca windows.h si bien no sale en las bibliotecas standar que el profesor dijo que se podian ocupar, la unica funcion que ocupamos fue "SetConsoleOutputCP(65001);" que lo que hace es cambiar al encoding a utf-8, de esta manera lograbamos hacer que los acentos se mostraran correctamente en la terminal. 
+**------Nota------**
+
+- La biblioteca windows.h si bien no sale en las bibliotecas standar que el profesor dijo que se podian ocupar, la unica funcion que ocupamos fue "SetConsoleOutputCP(65001);" que lo que hace es cambiar al encoding a utf-8, de esta manera lograbamos hacer que los acentos se mostraran correctamente en la terminal. 
+
 -------------------------------------------------------------------------------------------------------------------------------
 
 ## Ejemplos mostrando como interactuar con la aplicación.
 
 **----------------------- EJEMPLO (1) Cargar Canciones ---------------------------**
+ 
  Ingrese su opción: 1 
  Ingrese la ubicación del archivo CSV: song_dataset_.csv
 Archivo cargado perfectamente
 Presione una tecla para continuar...
 
------------------------ **EJEMPLO (2) Buscar por Género** --------------------------- 
+**----------------------- EJEMPLO (2) Buscar por Género ---------------------------** 
+
 Ingrese su opción: 2
 Ingrese el género de la canción: pop
 === (Pagina 1/100) ===
@@ -70,7 +76,7 @@ Opciones:
 Seleccione: 2
 Presione una tecla para continuar...
 
------------------------ **EJEMPLO (3) Buscar por Artista** --------------------------- 
+**----------------------- EJEMPLO (3) Buscar por Artista ---------------------------** 
 Ingrese su opción: 3
 Ingrese nombre del artista: Gen Hoshino
 === (Pagina 1/1) ===
