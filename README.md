@@ -29,8 +29,10 @@ Las opiones que funcionan son las siguientes:
 (1) Cargar Canciones. (2) Buscar por Género. (3) Buscar por Artista. (4) Buscar por Tempo. (5) Crear Lista de Reproducción. (6) Agregar Canción a Lista. (7) Mostrar Canciones de una Lista . (8) Salir.
 
 ------OBSERVACIÓN----- 
-Al pasar a otra opcion debo presionar cualquier tecla. También cuando queremos salir con la opción 2 en la ultima
-
+- Al pasar a otra opcion debo presionar cualquier tecla. 
+- Sería bueno implementar una función para controlar casos donde el nombre del artista o el nombre de los géneros 
+tenga letras minusculas o mayusculas pero sean la misma palabra, como por ejemplo: pop = Pop.
+- Tambien estaria bien agregar un buscar por pagina que me mueva directamente a la pagina.
 -------------------------------------------------------------------------------------------------------------------------------
 
 ## Ejemplos mostrando como interactuar con la aplicación.
@@ -44,9 +46,9 @@ Presione una tecla para continuar...
 ----------------------- **EJEMPLO (2) Buscar por Género** --------------------------- 
 Ingrese su opción: 2
 Ingrese el género de la canción: pop
-=== (Pagina 1/200) ===
+=== (Pagina 1/100) ===
 ╔═══════╦═══════════╦══════════════════════╦══════════════════════╦════════════════════════════════╦════════════════╗
-║ ID    ║ Tempo ║ Canción               ║ Álbum                 ║ Artista                        ║ Género    ║
+║ ID   ║ Tempo ║ Canción               ║ Álbum                 ║ Artista                        ║ Género    ║
 ╠═══════╬═══════════╬══════════════════════╬══════════════════════╬════════════════════════════════╬════════════════╣
 ║ 81000 ║ 171.01 ║ Blinding Lights        ║ After Hours            ║ The Weeknd                     ║ pop        ║
 ║ 81001 ║ 191.83 ║ Mann Mera              ║ Table No. 21 (Original ║ Gajendra Verma                 ║ pop        ║
@@ -66,42 +68,126 @@ Seleccione: 2
 Presione una tecla para continuar...
 
 ----------------------- **EJEMPLO (3) Buscar por Artista** --------------------------- 
+Ingrese su opción: 3
+Ingrese nombre del artista: Gen Hoshino
+=== (Pagina 1/1) ===
+╔═══════╦═══════════╦══════════════════════╦══════════════════════╦════════════════════════════════╦════════════════╗
+║ ID   ║ Tempo ║ Canción               ║ Álbum                 ║ Artista                        ║ Género    ║
+╠═══════╬═══════════╬══════════════════════╬══════════════════════╬════════════════════════════════╬════════════════╣
+║ 0    ║ 87.92  ║ Comedy                 ║ Comedy                 ║ Gen Hoshino                    ║ acoustic   ║
+║ 406  ║ 158.12 ║ Koi                    ║ POP VIRUS              ║ Gen Hoshino                    ║ acoustic   ║
+║ 663  ║ 129.99 ║ I Wanna Be Your Ghost  ║ I Wanna Be Your Ghost  ║ Gen Hoshino                    ║ acoustic   ║
+║ 751  ║ 89.02  ║ FUSHIGI                ║ FUSHIGI                ║ Gen Hoshino                    ║ acoustic   ║
+║ 756  ║ 159.99 ║ Doraemon               ║ Doraemon               ║ Gen Hoshino                    ║ acoustic   ║
+║ 800  ║ 108.17 ║ SUN                    ║ YELLOW DANCER          ║ Gen Hoshino                    ║ acoustic   ║
+║ 850  ║ 78.18  ║ Pop Virus              ║ POP VIRUS              ║ Gen Hoshino                    ║ acoustic   ║
+║ 62102 ║ 87.92  ║ Comedy                 ║ Comedy                 ║ Gen Hoshino                    ║ j-pop      ║
+║ 99152 ║ 87.92  ║ Comedy                 ║ Comedy                 ║ Gen Hoshino                    ║ singer-son ║
+║ 102151 ║ 87.92  ║ Comedy                 ║ Comedy                 ║ Gen Hoshino                    ║ songwriter ║
+╚═══════╩════════╩═════════════════════════╩══════════════════════╩════════════════════════════════╩════════════════╝
 
------------------------ **EJEMPLO (4) Buscar por Tempo** --------------------------- 
-
------------------------ **Ejemplo (5) Crear Lista de Reproducción** ---------------------------
-
-Cuando hay un ID
-Ingrese su opci├│n: 5 Ingrese el ID que desea buscar: 67 ID: 67. Descripci├│n: El celular no carga muy bien aunque aveces si lo hace bien. Prioridad: Media. Hora de Registro: 14:16:34
-
+Opciones:
+1) Página anterior --- 2) Volver al menú --- 3) Página siguiente
+Seleccione: 2
 Presione una tecla para continuar...
 
-Cuando NO hay ID:
-Ingrese su opci├│n: 5 Ingrese el ID que desea buscar: 56 El ID que a ingresado no existe Presione una tecla para continuar...
+----------------------- **EJEMPLO (4) Buscar por Tempo** --------------------------- 
+Ingrese su opción: 4
+Ingrese la “velocidad” deseada de las canciones: 
+1) Lentas: menor 80 BPM 
+2) Moderadas: mayor o igual a 80, menor o igual a 120 
+3) Rapidas: mayor a 120
+
+Ingrese la velocidad : 3
+
+=== (Pagina 1/6067) ===
+╔═══════╦═══════════╦══════════════════════╦══════════════════════╦════════════════════════════════╦════════════════╗
+║ ID   ║ Tempo ║ Canción               ║ Álbum                 ║ Artista                        ║ Género    ║
+╠═══════╬═══════════╬══════════════════════╬══════════════════════╬════════════════════════════════╬════════════════╣
+║ 3    ║ 181.74 ║ Can't Help Falling In  ║ Crazy Rich Asians (Ori ║ Kina Grannis                   ║ acoustic   ║
+║ 6    ║ 141.28 ║ Say Something          ║ Is There Anybody Out T ║ A Great Big World;Christina Ag ║ acoustic   ║
+║ 7    ║ 150.96 ║ I'm Yours              ║ We Sing. We Dance. We  ║ Jason Mraz                     ║ acoustic   ║
+║ 8    ║ 130.09 ║ Lucky                  ║ We Sing. We Dance. We  ║ Jason Mraz;Colbie Caillat      ║ acoustic   ║
+║ 11   ║ 133.41 ║ I Won't Give Up        ║ Love Is a Four Letter  ║ Jason Mraz                     ║ acoustic   ║
+║ 12   ║ 124.23 ║ Solo                   ║ Solo                   ║ Dan Berk                       ║ acoustic   ║
+║ 14   ║ 120.00 ║ Hold On - Remix        ║ Hold On (Remix)        ║ Chord Overstreet;Deepend       ║ acoustic   ║
+║ 18   ║ 130.09 ║ Lucky                  ║ We Sing. We Dance. We  ║ Jason Mraz;Colbie Caillat      ║ acoustic   ║
+║ 20   ║ 150.96 ║ I'm Yours              ║ We Sing. We Dance. We  ║ Jason Mraz                     ║ acoustic   ║
+║ 22   ║ 141.28 ║ Say Something          ║ Is There Anybody Out T ║ A Great Big World;Christina Ag ║ acoustic   ║
+╚═══════╩════════╩═════════════════════════╩══════════════════════╩════════════════════════════════╩════════════════╝
+
+Opciones:
+1) Página anterior --- 2) Volver al menú --- 3) Página siguiente
+Seleccione: 2
+Presione una tecla para continuar...
+
+----------------------- **Ejemplo (5) Crear Lista de Reproducción** ---------------------------
+Ingrese su opción: 5
+Ingrese el nombre para la nueva lista:
+mix_variados
+Su lista mix_variados a sido creada con exito
+Presione una tecla para continuar...
 
 ----------------------- **Ejemplo (6) Agregar Canción a Lista** ---------------------------
+Ingrese su opción: 6
+================ Mis Listas De Reproducción ================
+>  mix_variados
+
+================ Para Agregar Canciones ================
+-Ingrese el nombre de la lista a la
+que desea agregar una canción: mix_variados
+
+
+-Ingrese el ID de la canción que 
+desea agregar: 101518
+La cancion 'Rain: Showers' se a agregado con exito a 'mix_variados'.
+Presione una tecla para continuar...
+
+**Cuando se ingresa el nombre de la lista es la primera opción que aparece, en el caso de que el nombre de la lista sea inválido o no existe la lista el programa se devuelve al menú principal y no muestra la parte de los ID**
 
 ----------------------- **Ejemplo (7) Mostrar Canciones de una Lista** ---------------------------
+Ingrese su opción: 7
+================ Mis Listas De Reproducción ================
+>  mix_variados
 
------------------------ Ejemplo (5) Crear Lista de Reproducción ---------------------------
+================ Para Mostrar Canciones ================
+Ingrese el nombre de la lista de canciones que desea ver: mix_variados
 
+=== (Pagina 1/1) ===
+╔═══════╦═══════════╦══════════════════════╦══════════════════════╦════════════════════════════════╦════════════════╗
+║ ID   ║ Tempo ║ Canción               ║ Álbum                 ║ Artista                        ║ Género    ║
+╠═══════╬═══════════╬══════════════════════╬══════════════════════╬════════════════════════════════╬════════════════╣
+║ 101518 ║ 140.88 ║ Rain: Showers          ║ Rain And Waves         ║ Rain Sounds Factory STHLM      ║ sleep      ║
+╚═══════╩════════╩═════════════════════════╩══════════════════════╩════════════════════════════════╩════════════════╝
 
+Opciones:
+1) Página anterior --- 2) Volver al menú --- 3) Página siguiente
+Seleccione: 2
+Presione una tecla para continuar...
+
+**cuando se llega a la parte de  "Para Mostrar Canciones" e ingreso la lista que deseo buscar se debe presionar enter para pasar a ver las canciones de esa lista**
+
+----------------------- **Ejemplo (8) Salir** ---------------------------
+Ingrese su opción: 8
+Saliendo del programa...
 ## Contribuciones 
 
 ### Juan Gatica:
 
+- Encargado de la descarga de archivos para empezar el trabajo.
 - Desarrolló las siguientes funciones:
-    - mostrar_cancion_paginas, cargarArchivo, Mostrar_cancion, imprimir_cancion, buscar_imprimir_por_id, buscar_por_artista.
+    - mostrar_cancion_paginas, cargarArchivo, buscar_por_artista.
 - Diseño inicial de la interfaz de usuario.
 - Orden del código.
+- Documentación y comentarios en el código.
 - **Auto-evaluación**: 3 (Aporte excelente).
 
 ### Martina Ahumada:
-
+- Encargada de crear el repositorio.
 - Desarrolló las siguientes funciones:
     - buscar_por_genero, buscar_por_tempo, crear_lista_reproduccion, mostrar_listas_reproduccion, agregar_cancion_Alista, mostra_canciones_DeLista.
 - Documentación y comentarios en el código.
 - Diseño y redacción del README.
 - **Auto-evaluación**: 3 (Aporte excelente).
 
-Si bien cada uno se encargaba de una función en especifico de igual forma se recibia ayuda mutuamente.
+Si bien cada uno se encargaba de una función en específico de igual forma se recibía ayuda mutuamente corrigiendo errores o si alguno no lograba terminar la función, por lo tanto el "Desarrolló las siguientes funciones" no muestra realmente si alguien realizó muchas o pocas cosas en el código, ya que se realizaron muchos otros códigos y funciones de prueba que por motivos de presentación para la entrega hemos tenido que eliminarlas.
