@@ -17,11 +17,11 @@ Abre la terminal con ctrl + ñ.
 En la terminal bash, compila el programa con el siguiente comando : 
 
 ```bash
-gcc tdas/*.c tarea2.c -Wno-unused-result -o tarea2
+gcc tdas/*.c Spotifind.c -Wno-unused-result -o Spotifind
 ```
 Luego debe escribir lo siguiente para ejecutar la tarea: 
 ```bash
- ./tarea2
+ ./Spotifind
 ```
 Archivo para cargar canciones:
 ```bash
