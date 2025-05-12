@@ -1,4 +1,4 @@
-## Aplicación de música
+## Aplicación de música:
 
 Descripción: En este programa se crea Spotifind, una herramienta de consola que permite cargar una base de datos de canciones y, carga canciones desde un archivo csv, busca canciones por género, busca canciones por artista y busca canciones según su velocidad o tempo. También puede crear listas de reproduccion, puede agregar canciones a las listas ya creadas y por ultimo puede mostrar las canciones de una lista en especifico. 
 -------------------------------------------------------------------------------------------------------------------------------
@@ -28,16 +28,19 @@ las opciones que funcionan correctamente y las que no lo hacen indicando posible
 Las opiones que funcionan son las siguientes: 
 (1) Cargar Canciones. (2) Buscar por Género. (3) Buscar por Artista. (4) Buscar por Tempo. (5) Crear Lista de Reproducción. (6) Agregar Canción a Lista. (7) Mostrar Canciones de una Lista . (8) Salir.
 
-------OBSERVACIÓN----- 
+------OBSERVACIÓN------ 
 - Al pasar a otra opcion debo presionar cualquier tecla. 
 - Sería bueno implementar una función para controlar casos donde el nombre del artista o el nombre de los géneros 
 tenga letras minusculas o mayusculas pero sean la misma palabra, como por ejemplo: pop = Pop.
 - Tambien estaria bien agregar un buscar por pagina que me mueva directamente a la pagina.
+
+------Nota------
+-La biblioteca windows.h si bien no sale en las bibliotecas standar que el profesor dijo que se podian ocupar, la unica funcion que ocupamos fue "SetConsoleOutputCP(65001);" que lo que hace es cambiar al encoding a utf-8, de esta manera lograbamos hacer que los acentos se mostraran correctamente en la terminal. 
 -------------------------------------------------------------------------------------------------------------------------------
 
 ## Ejemplos mostrando como interactuar con la aplicación.
 
------------------------ **EJEMPLO (1) Cargar Canciones** ---------------------------
+**----------------------- EJEMPLO (1) Cargar Canciones ---------------------------**
  Ingrese su opción: 1 
  Ingrese la ubicación del archivo CSV: song_dataset_.csv
 Archivo cargado perfectamente
@@ -143,7 +146,7 @@ desea agregar: 101518
 La cancion 'Rain: Showers' se a agregado con exito a 'mix_variados'.
 Presione una tecla para continuar...
 
-**Cuando se ingresa el nombre de la lista es la primera opción que aparece, en el caso de que el nombre de la lista sea inválido o no existe la lista el programa se devuelve al menú principal y no muestra la parte de los ID**
+**Cuando se ingresa el nombre de la lista en la primera opción que aparece, en el caso de que el nombre de la lista sea inválido o no existe la lista, el programa se devuelve al menú principal y no muestra la parte de los ID**
 
 ----------------------- **Ejemplo (7) Mostrar Canciones de una Lista** ---------------------------
 Ingrese su opción: 7
@@ -165,7 +168,7 @@ Opciones:
 Seleccione: 2
 Presione una tecla para continuar...
 
-**cuando se llega a la parte de  "Para Mostrar Canciones" e ingreso la lista que deseo buscar se debe presionar enter para pasar a ver las canciones de esa lista**
+**Cuando se llega a la parte de  "Para Mostrar Canciones" e ingreso la lista que deseo buscar se debe presionar enter para pasar a ver las canciones de esa lista**
 
 ----------------------- **Ejemplo (8) Salir** ---------------------------
 Ingrese su opción: 8
