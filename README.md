@@ -77,6 +77,7 @@ Seleccione: 2
 Presione una tecla para continuar...
 
 **----------------------- EJEMPLO (3) Buscar por Artista ---------------------------** 
+
 Ingrese su opción: 3
 Ingrese nombre del artista: Gen Hoshino
 === (Pagina 1/1) ===
@@ -100,7 +101,8 @@ Opciones:
 Seleccione: 2
 Presione una tecla para continuar...
 
------------------------ **EJEMPLO (4) Buscar por Tempo** --------------------------- 
+**----------------------- EJEMPLO (4) Buscar por Tempo ---------------------------** 
+
 Ingrese su opción: 4
 Ingrese la “velocidad” deseada de las canciones: 
 1) Lentas: menor 80 BPM 
@@ -130,14 +132,16 @@ Opciones:
 Seleccione: 2
 Presione una tecla para continuar...
 
------------------------ **Ejemplo (5) Crear Lista de Reproducción** ---------------------------
+**----------------------- Ejemplo (5) Crear Lista de Reproducción ---------------------------**
+
 Ingrese su opción: 5
 Ingrese el nombre para la nueva lista:
 mix_variados
 Su lista mix_variados a sido creada con exito
 Presione una tecla para continuar...
 
------------------------ **Ejemplo (6) Agregar Canción a Lista** ---------------------------
+**----------------------- Ejemplo (6) Agregar Canción a Lista ---------------------------**
+
 Ingrese su opción: 6
 ================ Mis Listas De Reproducción ================
 >  mix_variados
@@ -154,7 +158,8 @@ Presione una tecla para continuar...
 
 **Cuando se ingresa el nombre de la lista en la primera opción que aparece, en el caso de que el nombre de la lista sea inválido o no existe la lista, el programa se devuelve al menú principal y no muestra la parte de los ID**
 
------------------------ **Ejemplo (7) Mostrar Canciones de una Lista** ---------------------------
+**----------------------- Ejemplo (7) Mostrar Canciones de una Lista ---------------------------**
+
 Ingrese su opción: 7
 ================ Mis Listas De Reproducción ================
 >  mix_variados
@@ -176,9 +181,13 @@ Presione una tecla para continuar...
 
 **Cuando se llega a la parte de  "Para Mostrar Canciones" e ingreso la lista que deseo buscar se debe presionar enter para pasar a ver las canciones de esa lista**
 
------------------------ **Ejemplo (8) Salir** ---------------------------
+**----------------------- Ejemplo (8) Salir ---------------------------**
+
 Ingrese su opción: 8
 Saliendo del programa...
+
+-------------------------------------------------------------------------------------------------------------------------------
+
 ## Contribuciones 
 
 ### Juan Gatica:
