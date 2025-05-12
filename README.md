@@ -60,6 +60,7 @@ Presione una tecla para continuar...
 Ingrese su opción: 2
 Ingrese el género de la canción: pop
 === (Pagina 1/100) ===
+```bash
 ╔═══════╦═══════════╦══════════════════════╦══════════════════════╦════════════════════════════════╦════════════════╗
 ║ ID   ║ Tempo ║ Canción               ║ Álbum                 ║ Artista                        ║ Género    ║
 ╠═══════╬═══════════╬══════════════════════╬══════════════════════╬════════════════════════════════╬════════════════╣
@@ -74,7 +75,7 @@ Ingrese el género de la canción: pop
 ║ 81008 ║ 79.97  ║ Jhoom - R&B Mix        ║ Jhoom                  ║ Ali Zafar                      ║ pop        ║
 ║ 81009 ║ 90.07  ║ Na Ja                  ║ Na Ja                  ║ Pav Dharia                     ║ pop        ║
 ╚═══════╩════════╩═════════════════════════╩══════════════════════╩════════════════════════════════╩════════════════╝
-
+```
 Opciones:
 1) Página anterior --- 2) Volver al menú --- 3) Página siguiente
 Seleccione: 2
