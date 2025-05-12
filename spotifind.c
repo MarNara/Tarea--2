@@ -47,7 +47,11 @@ typedef struct
   List* rapidas;
 }ListaTempoStruck;
 
+/*En esta función se muestra la información que contiene cada canción por página (muestra 10 canciones por página),
+tiene 3 opciones luego de mostrar la primera página, la 1) muestra la página anterior, la 2) muestra el menú principal 
+y la opción 3) pasa a la página siguiente.
 
+Está función facilita al ususario ver la imformación de manera más comoda.*/
 void mostrar_cancion_paginas(List* lista)
 {
   if (lista == NULL)
@@ -59,8 +63,8 @@ void mostrar_cancion_paginas(List* lista)
 
   int pagina_actual = 0;
   int canciones_por_pagina = 10;
-  int total_paginas = (list_size(lista) + canciones_por_pagina - 1) / canciones_por_pagina;
-  char opcion;
+  int total_paginas = (list_size(lista) + canciones_por_pagina - 1) / canciones_por_pagina;//formula para calcular el total de paginas
+  char opcion;//variable opcion
   
 
   do
@@ -71,9 +75,11 @@ void mostrar_cancion_paginas(List* lista)
     printf("║ %-4s ║ %-6s║ %-22s ║ %-22s ║ %-30s ║ %-10s ║\n", "ID", "Tempo", "Canción", "Álbum", "Artista", "Género");
     printf("╠═══════╬═══════════╬══════════════════════╬══════════════════════╬════════════════════════════════╬════════════════╣\n");
 
-    int inicio = pagina_actual * canciones_por_pagina;
+    int inicio = pagina_actual * canciones_por_pagina; //estas funciones calculan el fin de paginas para que no se generen errores
     int fin = (pagina_actual + 1) * canciones_por_pagina;
-    if (fin > list_size(lista)) fin = list_size(lista);
+
+    int fin = (pagina_actual + 1) * canciones_por_pagina;
+    if (fin > list_size(lista)) fin = list_size(lista); 
 
     Song* cancion = list_first(lista);
     for (int i = 0; i < inicio && cancion != NULL; i++)
@@ -91,9 +97,9 @@ void mostrar_cancion_paginas(List* lista)
     printf("\nOpciones:\n");
     printf("1) Página anterior --- 2) Volver al menú --- 3) Página siguiente\n");
     printf("Seleccione: ");
-    char buffer[10];
-    fgets(buffer, sizeof(buffer), stdin);
-    opcion = buffer[0];
+    char aux[10];
+    fgets(aux, sizeof(aux), stdin);
+    opcion = aux[0];
     
 
 
@@ -118,7 +124,7 @@ void mostrar_cancion_paginas(List* lista)
   return;
 }
 
-
+//Está función se encarga de cargar el archivo csv
 void cargarArchivo(const char *ruta, TreeMap* cancionesID, TreeMap* cancion_artista, TreeMap* cancion_genero, ListaTempoStruck* Lista_de_tempo) 
 {
     FILE *archivo = fopen(ruta, "r");
