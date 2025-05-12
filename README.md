@@ -49,18 +49,17 @@ tenga letras minusculas o mayusculas pero sean la misma palabra, como por ejempl
 ## Ejemplos mostrando como interactuar con la aplicación.
 
 **----------------------- EJEMPLO (1) Cargar Canciones ---------------------------**
- 
- Ingrese su opción: 1 
- Ingrese la ubicación del archivo CSV: song_dataset_.csv
+```bash
+Ingrese su opción: 1 
+Ingrese la ubicación del archivo CSV: song_dataset_.csv
 Archivo cargado perfectamente
 Presione una tecla para continuar...
-
+```
 **----------------------- EJEMPLO (2) Buscar por Género ---------------------------** 
-
+```bash
 Ingrese su opción: 2
 Ingrese el género de la canción: pop
 === (Pagina 1/100) ===
-```bash
 ╔═══════╦═══════════╦══════════════════════╦══════════════════════╦════════════════════════════════╦════════════════╗
 ║ ID   ║ Tempo ║ Canción               ║ Álbum                 ║ Artista                        ║ Género    ║
 ╠═══════╬═══════════╬══════════════════════╬══════════════════════╬════════════════════════════════╬════════════════╣
@@ -75,14 +74,14 @@ Ingrese el género de la canción: pop
 ║ 81008 ║ 79.97  ║ Jhoom - R&B Mix        ║ Jhoom                  ║ Ali Zafar                      ║ pop        ║
 ║ 81009 ║ 90.07  ║ Na Ja                  ║ Na Ja                  ║ Pav Dharia                     ║ pop        ║
 ╚═══════╩════════╩═════════════════════════╩══════════════════════╩════════════════════════════════╩════════════════╝
-```
+
 Opciones:
 1) Página anterior --- 2) Volver al menú --- 3) Página siguiente
 Seleccione: 2
 Presione una tecla para continuar...
-
+```
 **----------------------- EJEMPLO (3) Buscar por Artista ---------------------------** 
-
+```bash
 Ingrese su opción: 3
 Ingrese nombre del artista: Gen Hoshino
 === (Pagina 1/1) ===
@@ -105,9 +104,9 @@ Opciones:
 1) Página anterior --- 2) Volver al menú --- 3) Página siguiente
 Seleccione: 2
 Presione una tecla para continuar...
-
+```
 **----------------------- EJEMPLO (4) Buscar por Tempo ---------------------------** 
-
+```bash
 Ingrese su opción: 4
 Ingrese la “velocidad” deseada de las canciones: 
 1) Lentas: menor 80 BPM 
@@ -136,17 +135,17 @@ Opciones:
 1) Página anterior --- 2) Volver al menú --- 3) Página siguiente
 Seleccione: 2
 Presione una tecla para continuar...
-
+```
 **----------------------- Ejemplo (5) Crear Lista de Reproducción ---------------------------**
-
+```bash
 Ingrese su opción: 5
 Ingrese el nombre para la nueva lista:
 mix_variados
 Su lista mix_variados a sido creada con exito
 Presione una tecla para continuar...
-
+```
 **----------------------- Ejemplo (6) Agregar Canción a Lista ---------------------------**
-
+```bash
 Ingrese su opción: 6
 ================ Mis Listas De Reproducción ================
 >  mix_variados
@@ -160,11 +159,11 @@ que desea agregar una canción: mix_variados
 desea agregar: 101518
 La cancion 'Rain: Showers' se a agregado con exito a 'mix_variados'.
 Presione una tecla para continuar...
-
+```
 **Cuando se ingresa el nombre de la lista en la primera opción que aparece, en el caso de que el nombre de la lista sea inválido o no existe la lista, el programa se devuelve al menú principal y no muestra la parte de los ID**
 
 **----------------------- Ejemplo (7) Mostrar Canciones de una Lista ---------------------------**
-
+```bash
 Ingrese su opción: 7
 ================ Mis Listas De Reproducción ================
 >  mix_variados
@@ -183,14 +182,14 @@ Opciones:
 1) Página anterior --- 2) Volver al menú --- 3) Página siguiente
 Seleccione: 2
 Presione una tecla para continuar...
-
+```
 **Cuando se llega a la parte de  "Para Mostrar Canciones" e ingreso la lista que deseo buscar se debe presionar enter para pasar a ver las canciones de esa lista**
 
 **----------------------- Ejemplo (8) Salir ---------------------------**
-
+```bash
 Ingrese su opción: 8
 Saliendo del programa...
-
+```
 -------------------------------------------------------------------------------------------------------------------------------
 
 ## Contribuciones 
